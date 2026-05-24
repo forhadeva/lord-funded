@@ -1,0 +1,781 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --bg-black: #050506;
+  --bg-dark: #0a0a0c;
+  --bg-card: rgba(16, 16, 20, 0.75);
+  --bg-card-hover: rgba(24, 24, 30, 0.85);
+  
+  --gold-primary: #d4af37;
+  --gold-light: #fbe69e;
+  --gold-dark: #aa7c11;
+  --gold-gradient: linear-gradient(135deg, #8a640f 0%, #d4af37 50%, #fbe69e 100%);
+  --gold-gradient-hover: linear-gradient(135deg, #a87e22 0%, #fbe69e 50%, #d4af37 100%);
+  
+  --border-color: rgba(212, 175, 55, 0.12);
+  --border-color-hover: rgba(212, 175, 55, 0.35);
+  --gold-glow: 0 0 25px rgba(212, 175, 55, 0.15);
+  --gold-glow-strong: 0 0 35px rgba(212, 175, 55, 0.3);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #61616a;
+  
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Outfit', system-ui, sans-serif;
+  
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-black);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-black);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold-dark);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-primary);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Base Layout */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Grid Utilities */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .grid-4 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* Glassmorphic Utilities */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.4s ease, 
+              box-shadow 0.4s ease, 
+              background-color 0.4s ease;
+  will-change: transform, box-shadow;
+}
+
+.glass-panel:hover {
+  transform: translateY(-8px);
+  border-color: var(--border-color-hover);
+  box-shadow: 0 16px 36px rgba(212, 175, 55, 0.15), var(--gold-glow-strong);
+  background: var(--bg-card-hover);
+}
+
+/* Premium Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.02em;
+}
+
+.btn-primary {
+  background: var(--gold-gradient);
+  color: #000000;
+  border: none;
+  box-shadow: var(--gold-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(45deg);
+  transition: transform 0.5s ease;
+  pointer-events: none;
+}
+
+.btn-primary:hover::after {
+  transform: translate(25%, 25%) rotate(45deg);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--gold-glow-strong);
+  background: var(--gold-gradient-hover);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background: rgba(212, 175, 55, 0.05);
+  border-color: var(--gold-primary);
+  color: var(--gold-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--gold-glow);
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+/* Gradients and Gold Effects */
+.text-gold {
+  color: var(--gold-primary);
+}
+
+.text-gold-gradient {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gold-gradient {
+  background: var(--gold-gradient);
+}
+
+.glow-overlay {
+  position: absolute;
+  pointer-events: none;
+  filter: blur(100px);
+  opacity: 0.15;
+  border-radius: 50%;
+  background: var(--gold-primary);
+  z-index: 0;
+  animation: pulse-glow 8s infinite alternate ease-in-out;
+}
+
+/* Animation Keyframes */
+@keyframes pulse-glow {
+  0% {
+    opacity: 0.08;
+    transform: scale(0.9) translate(0px, 0px);
+  }
+  100% {
+    opacity: 0.22;
+    transform: scale(1.1) translate(10px, -15px);
+  }
+}
+
+@keyframes float-lord {
+  0% {
+    transform: translateY(0px);
+    filter: drop-shadow(0 0 35px rgba(212, 175, 55, 0.4));
+  }
+  50% {
+    transform: translateY(-12px);
+    filter: drop-shadow(0 0 50px rgba(212, 175, 55, 0.6));
+  }
+  100% {
+    transform: translateY(0px);
+    filter: drop-shadow(0 0 35px rgba(212, 175, 55, 0.4));
+  }
+}
+
+@keyframes text-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes border-glow-flow {
+  0% {
+    border-color: rgba(212, 175, 55, 0.12);
+  }
+  50% {
+    border-color: rgba(212, 175, 55, 0.4);
+  }
+  100% {
+    border-color: rgba(212, 175, 55, 0.12);
+  }
+}
+
+/* Animation utilities */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Floating & Divine Animations */
+.animate-float-lord {
+  animation: float-lord 6s infinite ease-in-out;
+}
+
+.text-gold-gradient {
+  background: var(--gold-gradient);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: text-shimmer 5s linear infinite;
+}
+
+/* Scroll Trigger Base Classes */
+.scroll-trigger {
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.scroll-trigger.fade-in-up {
+  transform: translateY(35px);
+}
+
+.scroll-trigger.fade-in-left {
+  transform: translateX(-35px);
+}
+
+.scroll-trigger.fade-in-right {
+  transform: translateX(35px);
+}
+
+.scroll-trigger.zoom-in {
+  transform: scale(0.93);
+}
+
+/* Active State to Trigger Animation */
+.scroll-trigger.active {
+  opacity: 1;
+  transform: translate(0) scale(1);
+}
+
+/* Custom Animation Stagger Delays */
+.delay-100 { transition-delay: 100ms !important; }
+.delay-200 { transition-delay: 200ms !important; }
+.delay-300 { transition-delay: 300ms !important; }
+.delay-400 { transition-delay: 400ms !important; }
+.delay-500 { transition-delay: 500ms !important; }
+.delay-600 { transition-delay: 600ms !important; }
+.delay-700 { transition-delay: 700ms !important; }
+.delay-800 { transition-delay: 800ms !important; }
+
+/* Pulse animation for glow blobs */
+.ht-blob-1 {
+  animation: pulse-glow 9s infinite alternate ease-in-out;
+}
+.ht-blob-2 {
+  animation: pulse-glow 7s infinite alternate-reverse ease-in-out;
+}
+
+/* Custom animations for FAQ card active state */
+.faq-card {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Navbar active state transition */
+nav {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Glow Grid Dot Pattern */
+.bg-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Responsive Grid/Flex Utilities */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr;
+  }
+  .container {
+    padding: 0 16px;
+  }
+}
+
+/* Home Page FAQ Redesign (matches the 2nd image layout) */
+.faq-container-unified {
+  background: rgba(10, 10, 12, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.faq-container-unified .faq-card {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  position: relative;
+  transition: all 0.3s ease;
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.04) !important;
+  box-shadow: none !important;
+}
+
+.faq-container-unified .faq-card:last-child {
+  border-bottom: none;
+}
+
+/* Left accent bar on active card */
+.faq-container-unified .faq-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3.5px;
+  background: var(--gold-gradient);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.faq-container-unified .faq-card.active::before {
+  opacity: 1;
+}
+
+.faq-container-unified .faq-card.active {
+  background: rgba(212, 175, 55, 0.03) !important;
+}
+
+.faq-container-unified .faq-card:hover {
+  background: rgba(255, 255, 255, 0.01) !important;
+}
+
+.faq-container-unified .faq-card.active:hover {
+  background: rgba(212, 175, 55, 0.05) !important;
+}
+
+/* Smooth expansion padding */
+.faq-container-unified .faq-card .faq-answer-wrapper {
+  transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+}
+
+.faq-container-unified .faq-card.active .faq-answer-wrapper {
+  opacity: 1 !important;
+  padding-bottom: 20px; /* add nice padding when open */
+}
+
+/* Mobile menu drawer premium blur background */
+.mobile-drawer-blur {
+  background-color: rgba(5, 5, 6, 0.96) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ================= THE LORD'S JOURNEY (ROADMAP) STYLES ================= */
+.roadmap-container {
+  position: relative;
+}
+
+/* Tilted Card Transformations (Alternating rotations & shifts like the reference) */
+.roadmap-card-tilted-1 {
+  transform: rotate(-2.5deg) translateY(12px);
+}
+
+.roadmap-card-tilted-2 {
+  transform: rotate(2deg) translateY(-8px);
+}
+
+.roadmap-card-tilted-3 {
+  transform: rotate(-1.5deg) translateY(15px);
+}
+
+.roadmap-card-tilted-4 {
+  transform: rotate(2.5deg) translateY(-4px);
+}
+
+/* Card Glow background overlay */
+.card-glow-bg {
+  position: absolute;
+  inset: -12px;
+  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.08), transparent 70%);
+  filter: blur(28px);
+  opacity: 0;
+  border-radius: 30px;
+  pointer-events: none;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+}
+
+.roadmap-step-card-wrapper:hover .card-glow-bg {
+  opacity: 1;
+}
+
+/* Glassmorphism Premium Cards */
+.glass-panel-premium {
+  background: rgba(10, 10, 12, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 175, 55, 0.12);
+  border-radius: 22px;
+  padding: 34px 28px;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+  overflow: visible; /* Needed for crown sticker overlay */
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.5s ease,
+              box-shadow 0.5s ease,
+              background-color 0.5s ease;
+  will-change: transform, box-shadow;
+}
+
+/* Smooth Rotation & Straighten Hover Effects */
+.roadmap-step-card-wrapper:hover .glass-panel-premium {
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 20px 45px rgba(212, 175, 55, 0.15), 
+              0 0 35px rgba(212, 175, 55, 0.22);
+  background: rgba(18, 18, 22, 0.85);
+}
+
+.roadmap-step-card-wrapper:hover .roadmap-card-tilted-1 {
+  transform: rotate(-0.5deg) translateY(-2px) scale(1.025);
+}
+
+.roadmap-step-card-wrapper:hover .roadmap-card-tilted-2 {
+  transform: rotate(0.5deg) translateY(-14px) scale(1.025);
+}
+
+.roadmap-step-card-wrapper:hover .roadmap-card-tilted-3 {
+  transform: rotate(-0.5deg) translateY(2px) scale(1.025);
+}
+
+.roadmap-step-card-wrapper:hover .roadmap-card-tilted-4 {
+  transform: rotate(0.5deg) translateY(-10px) scale(1.025);
+}
+
+/* Watermark step numbers inside cards */
+.step-watermark {
+  position: absolute;
+  bottom: -15px;
+  right: -5px;
+  font-size: 130px;
+  font-weight: 900;
+  line-height: 1;
+  color: rgba(212, 175, 55, 0.035);
+  user-select: none;
+  pointer-events: none;
+  transition: color 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.roadmap-step-card-wrapper:hover .step-watermark {
+  color: rgba(212, 175, 55, 0.07);
+  transform: scale(1.05) translate(-5px, -5px);
+}
+
+/* Crown sticker overlay popping out of Step 3 (Become Funded) */
+.roadmap-crown-sticker {
+  position: absolute;
+  top: -28px;
+  right: -24px;
+  z-index: 25;
+  transform: rotate(15deg);
+  filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.55));
+  animation: float-crown 4s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes float-crown {
+  0%, 100% {
+    transform: rotate(15deg) translateY(0);
+  }
+  50% {
+    transform: rotate(18deg) translateY(-6px);
+  }
+}
+
+/* Crown Icon container inside cards */
+.crown-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.roadmap-step-card-wrapper:hover .crown-icon-container {
+  background: var(--gold-gradient);
+  border-color: transparent;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.45);
+}
+
+.roadmap-step-card-wrapper:hover .crown-icon-container i {
+  color: #000000 !important;
+}
+
+/* Step Tags styling */
+.step-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold-primary);
+  letter-spacing: 0.12em;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* Highlighted card for "Become Funded" (Step 3) */
+.highlighted-royal-card {
+  border: 1px solid rgba(212, 175, 55, 0.38) !important;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(10, 10, 12, 0.95) 100%) !important;
+  box-shadow: 0 12px 35px rgba(212, 175, 55, 0.08);
+}
+
+.highlighted-royal-card .step-tag {
+  color: #000000;
+  background: var(--gold-gradient);
+  border-color: transparent;
+}
+
+/* Absolute positioned connecting arrows (desktop) */
+.roadmap-connecting-arrow-wrapper {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 90px;
+  height: 60px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.roadmap-connecting-arrow {
+  stroke: var(--gold-primary);
+  stroke-dasharray: 6, 6;
+  opacity: 0.7;
+  animation: arrow-dash-flow 1.5s linear infinite;
+}
+
+@keyframes arrow-dash-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+/* Horizontal alignment classes for 4 cards spacing */
+.arrow-pos-1 { left: calc(25% - 45px); }
+.arrow-pos-2 { left: calc(50% - 45px); }
+.arrow-pos-3 { left: calc(75% - 45px); }
+
+/* Feature Badges below the roadmap layout */
+.roadmap-feature-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(212, 175, 55, 0.12);
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-family: var(--font-heading);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.roadmap-feature-badge:hover {
+  background: rgba(212, 175, 55, 0.04);
+  border-color: var(--gold-primary);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--gold-glow);
+}
+
+/* Mobile specific layout configurations */
+@media (max-width: 1023px) {
+  .roadmap-card {
+    padding: 34px 28px;
+  }
+  
+  .step-watermark {
+    font-size: 110px;
+  }
+  
+  /* Reset horizontal tilts on mobile */
+  .roadmap-card-tilted-1,
+  .roadmap-card-tilted-2,
+  .roadmap-card-tilted-3,
+  .roadmap-card-tilted-4 {
+    transform: none !important;
+  }
+  
+  .roadmap-step-card-wrapper:hover .glass-panel-premium {
+    transform: translateY(-6px) scale(1.015) !important;
+  }
+  
+  .roadmap-crown-sticker {
+    top: -24px;
+    right: -10px;
+    transform: scale(0.8) rotate(15deg);
+  }
+}
+
+/* ================= LIVE PAYOUTS TICKER START ================= */
+.payout-ticker-container {
+  max-height: 480px;
+  overflow: hidden;
+  position: relative;
+  padding: 4px 0;
+  /* Premium vertical fade mask */
+  mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.payout-ticker-track {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: scroll-vertical-up 35s linear infinite;
+  will-change: transform;
+}
+
+.payout-ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-vertical-up {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+/* ================= LIVE PAYOUTS TICKER END ================= */
+

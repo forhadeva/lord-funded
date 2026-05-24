@@ -1,0 +1,627 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ | Lord Funded</title>
+  <meta name="description" content="Frequently asked questions about Lord Funded prop trading firm. Find answers about evaluations, rules, payouts, and platforms." />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              primary: '#d4af37',
+              light: '#fbe69e',
+              dark: '#aa7c11',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-[#050506] text-white font-sans min-h-screen overflow-x-hidden line-height-1.6">
+
+  <!-- Floating Messages Toast -->
+  {% if messages %}
+    <div id="messages-toast-container" class="fixed top-24 right-6 z-[2000] flex flex-col gap-3 max-w-sm w-full pointer-events-none">
+      {% for message in messages %}
+        <div class="message-toast pointer-events-auto flex items-center justify-between gap-3.5 p-4 rounded-xl border bg-[#0a0a0c]/95 border-gold-primary/20 text-white shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-md transition-all duration-300 transform translate-x-0 opacity-100">
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-lg {% if message.tags == 'error' %}bg-[#ef4444]/10 text-[#ef4444]{% else %}bg-[#10b981]/10 text-[#10b981]{% endif %} flex items-center justify-center flex-shrink-0">
+              <i data-lucide="{% if message.tags == 'error' %}alert-circle{% else %}check-circle-2{% endif %}" class="w-4 h-4"></i>
+            </div>
+            <span class="text-xs font-semibold leading-normal font-sans">{{ message }}</span>
+          </div>
+          <button onclick="this.parentElement.remove()" class="text-[#61616a] hover:text-white cursor-pointer transition-colors border-none bg-transparent flex items-center justify-center">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const toasts = document.querySelectorAll('.message-toast');
+          toasts.forEach(toast => {
+            toast.style.transform = 'translateX(100px)';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+          });
+        }, 5000);
+      });
+    </script>
+  {% endif %}
+
+  <!-- ================= NAVBAR START ================= -->
+  <nav class="fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 py-6 border-b border-transparent">
+    <div class="container mx-auto flex items-center justify-between">
+      <!-- Logo -->
+      <a href="{% url 'index' %}" class="flex items-center gap-2">
+        <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline-block align-middle" style="filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.7));">
+          <defs>
+            <linearGradient id="lfGoldGradient" gradientUnits="userSpaceOnUse" x1="10" y1="90" x2="90" y2="10">
+              <stop offset="0%" stop-color="#9A7432" />
+              <stop offset="20%" stop-color="#CBA358" />
+              <stop offset="50%" stop-color="#F7E5A9" />
+              <stop offset="80%" stop-color="#D8B467" />
+              <stop offset="100%" stop-color="#9A7432" />
+            </linearGradient>
+            <linearGradient id="lfBoxBg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="rgba(15, 14, 12, 0.95)" />
+              <stop offset="50%" stop-color="rgba(8, 8, 10, 0.98)" />
+              <stop offset="100%" stop-color="rgba(4, 4, 5, 1)" />
+            </linearGradient>
+          </defs>
+          <rect x="6" y="6" width="88" height="88" rx="22" stroke="url(#lfGoldGradient)" stroke-width="4" fill="url(#lfBoxBg)" />
+          <circle cx="50" cy="50" r="34" fill="rgba(212, 175, 55, 0.32)" style="filter: blur(10px);" />
+          <image href="{% static 'images/logo.png' %}" x="12" y="10" width="76" height="80" />
+        </svg>
+        <span class="font-heading font-extrabold text-2xl tracking-[0.05em] uppercase text-white">
+          Lord <span class="text-gold-gradient">Funded</span>
+        </span>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="desktop-menu hidden md:flex items-center gap-8">
+        <a href="{% url 'about' %}" class="font-heading text-sm font-medium text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="about">About</a>
+        <a href="{% url 'index' %}#features" class="font-heading text-sm font-medium text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="features">Features</a>
+        <a href="{% url 'how_it_works' %}" class="font-heading text-sm font-medium text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="howItWorks">How it Works</a>
+        <a href="{% url 'challenges' %}" class="font-heading text-sm font-medium text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="challenges">Challenges</a>
+        <a href="{% url 'faq' %}" class="font-heading text-sm font-medium text-gold-primary transition-colors duration-200" data-i18n="faq">FAQ</a>
+        <a href="{% url 'affiliate' %}" class="font-heading text-sm font-medium text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="affiliate">Affiliate</a>
+      </div>
+
+      <!-- Desktop Buttons -->
+      <div class="desktop-menu hidden md:flex items-center gap-3">
+        <!-- Language Switcher -->
+        <div class="relative">
+          <button id="lang-toggle-btn" class="flex items-center gap-1.5 bg-none border border-white/10 rounded-[10px] px-3 py-1.5 cursor-pointer text-[#a1a1aa] font-heading text-xs font-semibold hover:border-gold-primary/30 hover:text-white transition-all">
+            <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+            <span><span class="active-lang-flag">🇺🇸</span> <span class="active-lang-label">EN</span></span>
+            <i data-lucide="chevron-down" class="chevron-icon w-3 h-3 transition-transform duration-200"></i>
+          </button>
+          
+          <div id="lang-dropdown-menu" class="absolute right-0 top-[calc(100%+8px)] hidden bg-[#0e0d0a]/95 border border-gold-primary/20 rounded-[14px] p-1.5 min-w-[160px] backdrop-blur-[20px] shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
+            <button data-lang-code="en" class="lang-btn-option flex items-center gap-2.5 w-full px-3.5 py-2.5 rounded-[10px] border-none cursor-pointer font-heading text-xs font-semibold text-left transition-all">
+              <span class="text-base">🇺🇸</span>
+              <span>English</span>
+              <span class="lang-check ml-auto text-gold-primary hidden">✓</span>
+            </button>
+            <button data-lang-code="es" class="lang-btn-option flex items-center gap-2.5 w-full px-3.5 py-2.5 rounded-[10px] border-none cursor-pointer font-heading text-xs font-semibold text-left transition-all">
+              <span class="text-base">🇪🇸</span>
+              <span>Español</span>
+              <span class="lang-check ml-auto text-gold-primary hidden">✓</span>
+            </button>
+            <button data-lang-code="fr" class="lang-btn-option flex items-center gap-2.5 w-full px-3.5 py-2.5 rounded-[10px] border-none cursor-pointer font-heading text-xs font-semibold text-left transition-all">
+              <span class="text-base">🇫🇷</span>
+              <span>Français</span>
+              <span class="lang-check ml-auto text-gold-primary hidden">✓</span>
+            </button>
+          </div>
+        </div>
+
+        {% if user.is_authenticated %}
+        <span class="text-xs text-[#a1a1aa] font-heading font-bold select-none mr-2 flex items-center gap-1.5">
+          <i data-lucide="user" class="w-3.5 h-3.5 text-gold-primary"></i>
+          {{ user.username }}
+        </span>
+        <a href="{% url 'logout' %}" class="btn btn-secondary btn-sm inline-flex items-center gap-1.5">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span>Logout</span>
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-secondary btn-sm inline-flex items-center gap-1.5">
+          <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+          <span data-i18n="login">Login</span>
+        </a>
+        <a href="{% url 'signup' %}" class="btn btn-primary btn-sm inline-flex items-center gap-1.5">
+          <span data-i18n="getStarted">Get Started</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- Mobile Toggle Button -->
+      <button id="mobile-toggle-btn" class="md:hidden bg-none border-none text-white cursor-pointer mr-3">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-drawer" class="hidden absolute top-full left-0 right-0 mobile-drawer-blur p-6 flex-col gap-5 shadow-[0_8px_40px_rgba(212,175,55,0.08)]">
+      <a href="{% url 'about' %}" class="font-heading text-base font-semibold text-[#a1a1aa]" data-i18n="about">About</a>
+      <a href="{% url 'index' %}#features" class="font-heading text-base font-semibold text-[#a1a1aa]" data-i18n="features">Features</a>
+      <a href="{% url 'how_it_works' %}" class="font-heading text-base font-semibold text-[#a1a1aa]" data-i18n="howItWorks">How it Works</a>
+      <a href="{% url 'challenges' %}" class="font-heading text-base font-semibold text-[#a1a1aa]" data-i18n="challenges">Challenges</a>
+      <a href="{% url 'faq' %}" class="font-heading text-base font-semibold text-gold-primary" data-i18n="faq">FAQ</a>
+      <a href="{% url 'affiliate' %}" class="font-heading text-base font-semibold text-[#a1a1aa]" data-i18n="affiliate">Affiliate</a>
+      
+      <!-- Mobile Lang Selector -->
+      <div class="flex gap-2 py-2 border-t border-b border-white/5 mt-1">
+        <button data-lang-code="en" class="mobile-lang-btn flex-1 py-2.5 rounded-[10px] border border-white/5 bg-[#0e0d0a]/50 text-[#a1a1aa] font-heading text-xs font-semibold flex items-center justify-center gap-1.5">
+          <span>🇺🇸</span> English
+        </button>
+        <button data-lang-code="es" class="mobile-lang-btn flex-1 py-2.5 rounded-[10px] border border-white/5 bg-[#0e0d0a]/50 text-[#a1a1aa] font-heading text-xs font-semibold flex items-center justify-center gap-1.5">
+          <span>🇪🇸</span> Español
+        </button>
+        <button data-lang-code="fr" class="mobile-lang-btn flex-1 py-2.5 rounded-[10px] border border-white/5 bg-[#0e0d0a]/50 text-[#a1a1aa] font-heading text-xs font-semibold flex items-center justify-center gap-1.5">
+          <span>🇫🇷</span> Français
+        </button>
+      </div>
+
+      {% if user.is_authenticated %}
+      <div class="flex items-center justify-center gap-2 py-2 border-b border-white/5 text-[#a1a1aa] font-heading text-sm font-semibold select-none">
+        <i data-lucide="user" class="w-4 h-4 text-gold-primary"></i>
+        {{ user.username }}
+      </div>
+      <a href="{% url 'logout' %}" class="btn btn-secondary w-full justify-center mt-2">
+        <i data-lucide="log-out" class="w-4.5 h-4.5"></i>
+        <span>Logout</span>
+      </a>
+      {% else %}
+      <a href="{% url 'login' %}" class="btn btn-secondary w-full justify-center mt-2">
+        <i data-lucide="log-in" class="w-4.5 h-4.5"></i>
+        <span data-i18n="login">Login</span>
+      </a>
+      <a href="{% url 'signup' %}" class="btn btn-primary w-full justify-center">
+        <span data-i18n="getStarted">Get Started</span>
+        <i data-lucide="arrow-right" class="w-4.5 h-4.5"></i>
+      </a>
+      {% endif %}
+    </div>
+  </nav>
+  <!-- ================= NAVBAR END ================= -->
+
+
+  <!-- ================= FAQ HERO START ================= -->
+  <section class="relative py-40 text-center overflow-hidden">
+    <div class="bg-grid"></div>
+    <div class="glow-overlay w-[500px] h-[500px] top-[-15%] left-1/2 -translate-x-1/2 opacity-15"></div>
+    
+    <div class="container mx-auto relative z-10">
+      <div class="inline-flex items-center gap-2 bg-gold-primary/8 border border-gold-primary/20 px-4.5 py-1.5 rounded-full text-xs font-heading font-semibold text-gold-primary uppercase tracking-[0.08em] mb-6 scroll-trigger fade-in-up">
+        <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Support Center
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold leading-[1.1] mb-6 text-white scroll-trigger fade-in-up delay-100">
+        <span data-i18n="faqTitle1">Frequently Asked</span> <span class="text-gold-gradient" data-i18n="faqTitle2">Questions</span>
+      </h1>
+
+      <p class="text-[#a1a1aa] text-base sm:text-lg leading-[1.7] max-w-[560px] mx-auto mb-10 scroll-trigger fade-in-up delay-200">
+        Everything you need to know about LordFunded challenges, payouts, rules, and trading.
+      </p>
+
+      <!-- Search Bar -->
+      <div class="max-w-[500px] mx-auto flex items-center gap-3 bg-[#0e0d0a]/70 border border-gold-primary/15 rounded-2xl p-3 px-5 backdrop-blur-[12px] scroll-trigger zoom-in delay-300">
+        <i data-lucide="search" class="w-[18px] h-[18px] text-[#555] flex-shrink-0"></i>
+        <input
+          id="faq-search-input"
+          type="text"
+          placeholder="Search questions..."
+          data-i18n-placeholder="searchQuestions"
+          class="flex-1 bg-transparent border-none outline-none text-white text-[15px] font-sans"
+        />
+        <button id="faq-search-clear" class="hidden bg-transparent border-none text-[#666] cursor-pointer text-base px-1">✕</button>
+      </div>
+    </div>
+  </section>
+  <!-- ================= FAQ HERO END ================= -->
+
+
+  <!-- ================= CATEGORIES & ACCORDIONS START ================= -->
+  <section class="py-10 pb-20">
+    <div class="container mx-auto">
+      
+      <!-- Category Pills -->
+      <div id="faq-categories-container" class="flex flex-wrap gap-2.5 justify-center mb-10 max-w-4xl mx-auto scroll-trigger fade-in-up">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Results Count -->
+      <div class="text-center mb-6">
+        <span id="faq-results-count" class="text-sm text-[#61616a]">
+          <!-- Populated by JS -->
+        </span>
+      </div>
+
+      <!-- FAQ Accordion List -->
+      <div id="faq-accordion-list" class="max-w-[820px] mx-auto flex flex-col gap-3.5 scroll-trigger fade-in-up">
+        <!-- Populated dynamically by JS -->
+      </div>
+
+      <!-- Still Have Questions CTA -->
+      <div class="text-center mt-16">
+        <div class="glass-panel p-12 max-w-[600px] mx-auto scroll-trigger zoom-in">
+          <h3 class="text-2xl font-heading font-extrabold mb-3 text-white">
+            <span data-i18n="stillHaveQuestions">Still Have</span> <span class="text-gold-gradient">Questions</span>?
+          </h3>
+          <p class="text-[#a1a1aa] text-sm mb-6 leading-relaxed" data-i18n="supportAvailable">
+            Our support team is available 24/7 to help you.
+          </p>
+          <a href="mailto:support@lordfunded.com" class="btn btn-primary inline-flex gap-2">
+            <span data-i18n="contactSupport">Contact Support</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <!-- ================= CATEGORIES & ACCORDIONS END ================= -->
+
+
+  <!-- ================= FOOTER START ================= -->
+  <footer class="bg-[#030304] border-t border-gold-primary/12 py-20 pb-10 text-left relative z-5">
+    <div class="container mx-auto">
+      <!-- Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
+        
+        <!-- Info Column -->
+        <div class="flex flex-col gap-5">
+          <a href="{% url 'index' %}" class="flex items-center gap-2.5">
+            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline-block align-middle" style="filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.7));">
+              <rect x="6" y="6" width="88" height="88" rx="22" stroke="url(#lfGoldGradient)" stroke-width="4" fill="url(#lfBoxBg)" />
+              <circle cx="50" cy="50" r="34" fill="rgba(212, 175, 55, 0.32)" style="filter: blur(10px);" />
+              <image href="{% static 'images/logo.png' %}" x="12" y="10" width="76" height="80" />
+            </svg>
+            <span class="font-heading font-extrabold text-2xl tracking-[0.05em] uppercase text-white">
+              Lord <span class="text-gold-gradient">Funded</span>
+            </span>
+          </a>
+          <p class="text-sm text-[#a1a1aa] leading-relaxed" data-i18n="footerDesc">
+            Empowering global traders with simulated trading capital. Prove your consistency, pass the challenges, and secure profit splits up to 90%.
+          </p>
+          <!-- Socials -->
+          <div class="flex gap-3">
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="bg-white/2 border border-gold-primary/12 text-[#a1a1aa] w-[38px] h-[38px] rounded-lg flex items-center justify-center transition-all hover:text-gold-primary hover:border-gold-primary hover:bg-gold-primary/5">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" class="bg-white/2 border border-gold-primary/12 text-[#a1a1aa] w-[38px] h-[38px] rounded-lg flex items-center justify-center transition-all hover:text-gold-primary hover:border-gold-primary hover:bg-gold-primary/5">
+              <i data-lucide="send" class="w-[18px] h-[18px]"></i>
+            </a>
+            <a href="#" class="bg-white/2 border border-gold-primary/12 text-[#a1a1aa] w-[38px] h-[38px] rounded-lg flex items-center justify-center transition-all hover:text-gold-primary hover:border-gold-primary hover:bg-gold-primary/5">
+              <i data-lucide="globe" class="w-[18px] h-[18px]"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Challenges Column -->
+        <div>
+          <h4 class="font-heading text-white text-base font-semibold mb-5" data-i18n="footerChallenges">Challenges</h4>
+          <div class="flex flex-col gap-3">
+            <a href="{% url 'challenges' %}" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footer1Step">1-Step Evaluation</a>
+            <a href="{% url 'challenges' %}" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footer2Step">2-Step Evaluation</a>
+            <a href="{% url 'challenges' %}" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footerFundingRules">Funding Rules</a>
+            <a href="{% url 'challenges' %}" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footerScaling">Scaling Plans</a>
+          </div>
+        </div>
+
+        <!-- Info Column -->
+        <div>
+          <h4 class="font-heading text-white text-base font-semibold mb-5" data-i18n="footerInfo">Information</h4>
+          <div class="flex flex-col gap-3">
+            <a href="{% url 'index' %}#features" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footerFeatures">Features</a>
+            <a href="{% url 'how_it_works' %}" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footerHowItWorks">How it Works</a>
+            <a href="{% url 'faq' %}" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footerFAQ">FAQ Support</a>
+            <a href="/#contact-us" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footerContact">Contact Us</a>
+          </div>
+        </div>
+
+        <!-- Newsletter Column -->
+        <div>
+          <h4 class="font-heading text-white text-base font-semibold mb-5" data-i18n="footerStayUpdated">Stay Updated</h4>
+          <p class="text-[#a1a1aa] text-[13px] mb-4 leading-normal" data-i18n="footerSubscribe">
+            Subscribe to receive updates on leverage limits, promotions, and new challenge options.
+          </p>
+          <form onsubmit="event.preventDefault()" class="flex bg-white/2 border border-gold-primary/12 rounded-lg p-1">
+            <input type="email" placeholder="Enter email address" data-i18n-placeholder="footerEmail" required class="background-none border-none outline-none bg-transparent text-white px-3 py-2 text-xs w-full" />
+            <button type="submit" class="bg-gold-gradient border-none rounded-md text-black px-3.5 py-2 cursor-pointer flex items-center justify-center hover:opacity-90">
+              <i data-lucide="mail" class="w-4 h-4"></i>
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Divider -->
+      <hr class="border-none border-t border-white/5 mb-8" />
+
+      <!-- Disclaimer -->
+      <div class="mb-8 text-[11px] text-[#61616a] leading-relaxed text-justify">
+        <strong>Regulatory Disclaimer:</strong> <span data-i18n="footerDisclaimer">Lord Funded provides simulated trading environments for evaluation and educational purposes only. All accounts offered are simulated demo accounts, and all trading results are simulated rather than real market executions. We do not act as a custodian, broker-dealer, or investment advisor. Trading financial derivatives involves high risks, and simulated histories do not guarantee future success. By accessing our services, you acknowledge that no actual capital deposits or actual investments are being made.</span>
+      </div>
+
+      <!-- Bottom -->
+      <div class="flex flex-row justify-between items-center flex-wrap gap-4">
+        <span class="text-xs text-[#61616a]">
+          © <span id="current-year"></span> Lord Funded. <span data-i18n="allRightsReserved">All rights reserved.</span>
+        </span>
+        <div class="flex gap-5">
+          <a href="#" class="text-xs text-[#61616a] hover:text-gold-primary transition-colors" data-i18n="privacyPolicy">Privacy Policy</a>
+          <a href="#" class="text-xs text-[#61616a] hover:text-gold-primary transition-colors" data-i18n="termsOfService">Terms of Service</a>
+          <a href="#" class="text-xs text-[#61616a] hover:text-gold-primary transition-colors" data-i18n="riskDisclosure">Risk Disclosure</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- ================= FOOTER END ================= -->
+
+  <!-- Load dictionaries and scripts -->
+  <script src="{% static 'js/translations.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+
+  <!-- DATA & FAQ PAGE LOGIC -->
+  <script>
+    const faqs = [
+      // ── General ──
+      { cat: 'General', q: 'What is a prop firm?', a: 'A prop firm (proprietary trading firm) provides traders with real capital to trade financial markets. Instead of risking your own money, you trade the firm\'s capital and keep a percentage of the profits. LordFunded evaluates traders through challenges, then funds those who demonstrate consistent, disciplined trading.' },
+      { cat: 'General', q: 'What is LordFunded?', a: 'LordFunded is a faith-inspired proprietary trading firm that empowers disciplined traders with up to $500,000 in real funded capital. We believe faithful stewardship of capital is a calling — our mission is to fund traders who trade with purpose, discipline, and integrity.' },
+      { cat: 'General', q: 'Is LordFunded a broker?', a: 'No. LordFunded is a proprietary trading firm, not a broker. We work with regulated third-party brokers to provide trading infrastructure. LordFunded funds traders — we do not hold client deposits, offer investment advice, or provide brokerage services.' },
+      { cat: 'General', q: 'Does LordFunded manage client money?', a: 'No. LordFunded does not manage any client funds. Traders manage their own accounts independently using our funded capital. All trading decisions are made solely by the funded trader. LordFunded does not place trades, advise on trades, or manage positions on behalf of any trader.' },
+      { cat: 'General', q: 'Are trades executed with real money?', a: 'No. All trading accounts on LordFunded operate in a simulated trading environment. The challenge phase and funded accounts are both simulated and designed to evaluate trader performance under real market conditions. Traders receive payouts based on their performance according to LordFunded\'s payout structure and rules.' },
+      { cat: 'General', q: 'Why is LordFunded faith-inspired?', a: 'LordFunded is built on the belief that faithful stewardship of capital is a principle found throughout scripture. We believe disciplined, consistent trading reflects the same values of wisdom, patience, and integrity that guide a life of faith. Our name, our rules, and our culture reflect this foundation.' },
+
+      // ── Challenge ──
+      { cat: 'Challenge', q: 'How does the LordFunded challenge work?', a: 'Choose your account type and size, pay the one-time challenge fee, and begin trading. Hit the profit target while respecting the drawdown and risk rules, and you pass. Once passed, you receive a live funded account with real capital. Your challenge fee is fully refunded on your first payout.' },
+      { cat: 'Challenge', q: 'How many account types does LordFunded offer?', a: 'LordFunded offers four account types:\n\nTrial (Step 1) — Single phase, 10% profit target\nQuest (Step 2) — Two stages, 10% then 5% profit target\nThrone (Throne HFT) — Single phase for algorithmic traders, no minimum days\nLord (Lord Instant) — No challenge, live capital from day one' },
+      { cat: 'Challenge', q: 'What is the profit target?', a: 'Trial (Step 1): 10% of initial account balance\nQuest (Step 2): Stage 1 = 10%, Stage 2 = 5%\nThrone (HFT): 10% of initial account balance\nLord (Instant): No challenge target. First withdrawal eligible after 5% profit generated.' },
+      { cat: 'Challenge', q: 'How long does it take to get funded?', a: 'It depends on your account type. Step 1 requires minimum 5 trading days. Step 2 requires minimum 5 days in each stage. The Throne HFT account has no minimum days — you can pass in a single trading session. The Lord Instant account is activated within 24 hours of KYC approval — no challenge at all.' },
+      { cat: 'Challenge', q: 'What happens if I fail the challenge?', a: 'If you breach a drawdown rule or violate any hard rules, your challenge account is closed. You may repurchase at full price or take advantage of our discounted reset option (50% of original price for Step 1 and Step 2, 60% for Lord accounts). Your challenge fee is not refunded on a failed account — only on your first successful payout.' },
+      { cat: 'Challenge', q: 'Is my challenge fee refundable?', a: 'Yes — for Step 1, Step 2, and Throne HFT accounts, the full challenge fee is refunded on your first funded payout. The Lord Instant account fee is non-refundable as no challenge is completed.' },
+
+      // ── Accounts & Capital ──
+      { cat: 'Accounts', q: 'How much capital can I trade with?', a: 'LordFunded offers account sizes from $5,000 up to $500,000. The Lord (Instant) account starts at $100,000. After 3 consecutive profitable payout cycles, your account size increases by 25% (20% for Lord accounts), so your capital grows as you perform.' },
+      { cat: 'Accounts', q: 'What is the Lord Instant Funded Account?', a: 'The Lord Instant account provides live funded capital from day one with zero evaluation. Purchase → complete KYC within 24 hours → begin trading real capital immediately. Available in $100K, $200K, and $500K sizes. Starting profit split is 75% scaling to 100%. Maximum drawdown is 8% static from initial balance — the floor never moves regardless of profit.' },
+      { cat: 'Accounts', q: 'Can I have multiple accounts?', a: 'You may hold multiple challenge accounts simultaneously. However, only one active Lord Instant Funded Account is permitted per verified identity at any time. Running multiple accounts from the same IP address without prior written compliance approval will trigger a review of all accounts involved.' },
+      { cat: 'Accounts', q: 'What leverage is available?', a: '1:100 leverage across all instruments and all account sizes on every LordFunded account type.' },
+      { cat: 'Accounts', q: 'What instruments can I trade?', a: 'You can trade Forex pairs, Gold (XAUUSD), Indices, Commodities, and Cryptocurrencies. Crypto pairs such as BTCUSD and ETHUSD operate 24/7 and are exempt from overnight and weekend holding restrictions across all account types.' },
+
+      // ── Rules ──
+      { cat: 'Rules', q: 'What are the drawdown rules?', a: 'All accounts have a 5% daily drawdown limit. Maximum drawdown is 10% for Trial, Quest, and Throne accounts, and 8% for the Lord Instant account. All drawdown on every LordFunded account type is calculated on a static basis from the initial account balance only. The drawdown floor never moves, never trails, and never tightens regardless of how much profit the account generates. Breaching either limit results in immediate account failure.' },
+      { cat: 'Rules', q: 'What is static drawdown?', a: 'Static drawdown means your drawdown floor is fixed at the initial account balance for the entire lifetime of the account and never changes. On the Lord Instant account, a $100,000 account always has a $92,000 floor (8% max drawdown) whether the account grows to $200,000 or stays flat. Your profits never tighten the floor against you.' },
+      { cat: 'Rules', q: 'What is the consistency rule?', a: 'On funded accounts, no single trading day\'s profit may exceed 30% of your total accumulated profit. This rule ensures traders are generating consistent returns rather than gambling on one lucky session. It is NOT active during the challenge phase on any account.\n\nExample: Total profit $5,000 on funded account — no single day can show more than $1,500 profit.' },
+      { cat: 'Rules', q: 'What is the inactivity rule?', a: 'If no trade is placed within any consecutive 20-day period, the account is automatically marked as failed with no recovery. Lord Instant accounts also require a minimum of 5 trading days with at least one trade each within every 30-day calendar period.' },
+      { cat: 'Rules', q: 'What is the minimum holding time?', a: 'Step 2 funded: 3 minutes minimum per trade\nThrone HFT funded: 1 minute minimum per trade\nLord Instant: 3 minutes from the very first trade (no challenge phase exists)\nChallenge phases (Step 1 and Step 2): No minimum holding time' },
+      { cat: 'Rules', q: 'Can I hold trades over the weekend?', a: 'Step 1 and Step 2 challenge accounts permit weekend holding. Funded accounts and Lord/HFT accounts do not permit weekend holding. Cryptocurrency pairs are always exempt as they trade 24/7.' },
+      { cat: 'Rules', q: 'Can I hold trades overnight?', a: 'Overnight holding is not permitted on any LordFunded account type. All trades must be closed before the daily market close. Exception: Cryptocurrency pairs operate continuously and are fully exempt from this rule.' },
+      { cat: 'Rules', q: 'Is a Stop Loss mandatory?', a: 'For Step 1, Step 2, HFT and Lord Instant accounts — Stop Loss is not mandatory. Traders may manage exits freely.' },
+
+      // ── Strategies ──
+      { cat: 'Strategies', q: 'What strategies are allowed?', a: 'Hedging and news trading are permitted across all accounts. The Throne HFT account also permits Expert Advisors, bots, scalping, and grid trading. Manual algorithmic assistance tools (alerts, indicators) are allowed on all accounts provided trades are manually executed.' },
+      { cat: 'Strategies', q: 'What strategies are prohibited?', a: 'The following are prohibited on all accounts except where noted:\n\n✗ Martingale Strategy\n✗ Layering (Hard Breach — immediate termination)\n✗ Copy Trading\n✗ Third Party Signal Services\n✗ Account Sharing\n✗ Expert Advisors / Bots (permitted on HFT only)\n✗ Scalping (permitted on HFT only)' },
+      { cat: 'Strategies', q: 'What is layering and why is it a Hard Breach?', a: 'Layering means placing multiple stacked orders at different price levels to manipulate market depth, exploit execution fills, or simulate martingale-style position building. It results in immediate account termination with no replacement, no refund, and no appeal — on both challenge and funded accounts.' },
+      { cat: 'Strategies', q: 'Can I use a VPS?', a: 'Yes on HFT accounts — VPS is fully encouraged for algorithmic trading. On Lord Instant accounts, VPS is permitted for monitoring and alert tools only — not for running automated bots. Each account must operate from a unique IP address. If your IP changes, notify support within 48 hours.' },
+
+      // ── Payouts ──
+      { cat: 'Payouts', q: 'How much profit can traders keep?', a: 'Profit splits start between 75% and 80% depending on account type and scale up to 100% over time. After each withdrawal, your profit split increases by 5%. The Lord Instant account starts at 75% and all other accounts start at 80%.\n\nExample: Step 1 trader — Payout 1 = 80%, Payout 2 = 85%, Payout 3 = 90%... up to 100%.' },
+      { cat: 'Payouts', q: 'When and how do I get paid?', a: 'Payouts are processed every 21 days from your funded account activation date. Minimum withdrawal is $100 and your account must have at least 10% profit. Supported payout methods are Bank Wire Transfer, USDT (TRC20/ERC20), Bitcoin (BTC), Wise, and Deel. All requests are processed within 3 to 5 business days.' },
+      { cat: 'Payouts', q: 'What is the scaling plan?', a: 'After 3 consecutive profitable payout cycles, your funded account balance is automatically increased:\n\nStep 1, Step 2, HFT: +25% per qualifying period\nLord Instant: +20% per qualifying period\n\nExample: $100,000 Step 1 funded account → 3 profitable cycles → $125,000 funded account.' },
+      { cat: 'Payouts', q: 'What is the Profit Protection Lock?', a: 'On Lord Instant accounts, once the account reaches 20% total profit, the drawdown floor locks at 5% below that peak equity level. Example: $100K account reaches $120K — the floor locks at $114,000. You cannot lose more than $6,000 from your best performance point, protecting your realized gains automatically.' },
+      { cat: 'Payouts', q: 'What is the LordFunded Loyalty Tier?', a: 'Lord Instant account holders who maintain an active funded account for 12 consecutive months without any breach are elevated to Loyalty Tier status. Benefits include priority payout processing, a dedicated account manager, reduced account reset fee (40% instead of 60%), and access to exclusive higher account sizes not available through standard purchasing.' },
+
+      // ── Technical ──
+      { cat: 'Technical', q: 'What is KYC and when do I need it?', a: 'KYC (Know Your Customer) is identity verification. You need a valid government-issued ID (passport or national ID) and proof of address dated within 3 months. For Step 1, Step 2, and HFT accounts, KYC is required before your first payout. For the Lord Instant account, KYC must be completed before the account is activated.' },
+      { cat: 'Technical', q: 'What happens if my broker account becomes invalid?', a: 'If a broker-side technical issue invalidates your account, LordFunded will issue a fresh replacement account at the same stage and level. Balance and trade history cannot be transferred between broker accounts. If you are in the funded stage, you do not restart from the challenge.' },
+    ];
+
+    const CATEGORIES = ['All', 'General', 'Challenge', 'Accounts', 'Rules', 'Strategies', 'Payouts', 'Technical'];
+
+    let activeCategory = 'All';
+    let searchQuery = '';
+    let openFaqIdx = null;
+
+    // Translation keys for categories
+    const CAT_LABELS = {
+      en: { All: 'All', General: 'General', Challenge: 'Challenge', Accounts: 'Accounts', Rules: 'Rules', Strategies: 'Strategies', Payouts: 'Payouts', Technical: 'Technical', noResults: 'No questions match your search.' },
+      es: { All: 'Todo', General: 'General', Challenge: 'Desafíos', Accounts: 'Cuentas', Rules: 'Reglas', Strategies: 'Estrategias', Payouts: 'Pagos', Technical: 'Técnico', noResults: 'No se encontraron preguntas que coincidan con su búsqueda.' },
+      fr: { All: 'Tout', General: 'Général', Challenge: 'Défis', Accounts: 'Comptes', Rules: 'Règles', Strategies: 'Stratégies', Payouts: 'Paiements', Technical: 'Technique', noResults: 'Aucune question ne correspond à votre recherche.' }
+    };
+
+    function renderFAQs() {
+      const currentLang = localStorage.getItem('lang') || 'en';
+      const catTranslations = CAT_LABELS[currentLang] || CAT_LABELS.en;
+      
+      // 1. Render Category Pills
+      const catContainer = document.getElementById('faq-categories-container');
+      if (catContainer) {
+        catContainer.innerHTML = '';
+        CATEGORIES.forEach(cat => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          const isActive = cat === activeCategory;
+          const count = cat === 'All' ? faqs.length : faqs.filter(f => f.cat === cat).length;
+          
+          btn.className = 'px-5 py-2.5 rounded-full text-xs font-heading font-semibold cursor-pointer transition-all duration-200';
+          
+          if (isActive) {
+            btn.style.border = '1px solid rgba(212,175,55,0.4)';
+            btn.style.background = 'rgba(212,175,55,0.1)';
+            btn.style.color = 'var(--gold-primary)';
+            btn.style.boxShadow = '0 0 12px rgba(212,175,55,0.1)';
+          } else {
+            btn.style.border = '1px solid rgba(255,255,255,0.06)';
+            btn.style.background = 'rgba(14,13,10,0.5)';
+            btn.style.color = '#a1a1aa';
+          }
+          
+          const labelText = catTranslations[cat] || cat;
+          btn.innerHTML = `${labelText} <span class="opacity-50 ml-1 font-normal text-[10px]">(${count})</span>`;
+          
+          btn.addEventListener('click', () => {
+            activeCategory = cat;
+            openFaqIdx = null; // Close open accordions
+            renderFAQs();
+          });
+          
+          catContainer.appendChild(btn);
+        });
+      }
+
+      // Filter FAQs based on active category & search query
+      const filtered = faqs.filter(faq => {
+        const matchesCat = activeCategory === 'All' || faq.cat === activeCategory;
+        const matchesSearch = !searchQuery || faq.q.toLowerCase().includes(searchQuery.toLowerCase()) || faq.a.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCat && matchesSearch;
+      });
+
+      // 2. Render Results Count
+      const countEl = document.getElementById('faq-results-count');
+      if (countEl) {
+        const dict = translations[currentLang] || translations.en;
+        const suffix = dict.questionsFound || 'questions found';
+        countEl.textContent = `${filtered.length} ${suffix}`;
+      }
+
+      // 3. Render FAQs list
+      const listContainer = document.getElementById('faq-accordion-list');
+      if (listContainer) {
+        listContainer.innerHTML = '';
+        
+        if (filtered.length === 0) {
+          listContainer.innerHTML = `
+            <div class="text-center py-16">
+              <i data-lucide="help-circle" class="w-10 h-10 text-[#333] mx-auto mb-4"></i>
+              <p class="text-[#a1a1aa] text-base">${catTranslations.noResults}</p>
+            </div>
+          `;
+          lucide.createIcons({
+            root: listContainer
+          });
+          return;
+        }
+
+        filtered.forEach((faq, idx) => {
+          const isOpen = openFaqIdx === idx;
+          const card = document.createElement('div');
+          
+          card.className = 'border rounded-2xl p-5 sm:px-6 cursor-pointer backdrop-blur-md transition-all duration-250';
+          
+          if (isOpen) {
+            card.style.background = 'rgba(212, 175, 55, 0.04)';
+            card.style.borderColor = 'rgba(212, 175, 55, 0.3)';
+            card.style.boxShadow = '0 0 20px rgba(212, 175, 55, 0.08)';
+          } else {
+            card.style.background = 'rgba(14, 13, 10, 0.6)';
+            card.style.borderColor = 'rgba(255, 255, 255, 0.06)';
+            card.style.boxShadow = 'none';
+          }
+
+          // Format answer line breaks
+          const formattedAnswer = faq.a.replace(/\n/g, '<br/>');
+
+          card.innerHTML = `
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-3.5 flex-1">
+                <i data-lucide="help-circle" class="question-icon w-[18px] h-[18px] flex-shrink-0 transition-colors duration-200" style="color: ${isOpen ? 'var(--gold-primary)' : '#555'}"></i>
+                <span class="font-heading text-base font-semibold text-white transition-colors duration-200" style="color: ${isOpen ? 'var(--gold-primary)' : '#fff'}">${faq.q}</span>
+              </div>
+              <div class="flex items-center gap-3.5 flex-shrink-0">
+                <span class="text-[10px] font-heading font-bold text-gold-primary bg-gold-primary/8 px-2.5 py-0.5 rounded-full uppercase tracking-wider">${catTranslations[faq.cat] || faq.cat}</span>
+                <i data-lucide="chevron-down" class="chevron-icon w-[18px] h-[18px] transition-transform duration-200" style="color: ${isOpen ? 'var(--gold-primary)' : '#444'}; transform: ${isOpen ? 'rotate(180deg)' : 'rotate(0deg)'}"></i>
+              </div>
+            </div>
+            
+            <div class="faq-answer-wrapper overflow-hidden transition-all duration-350 ease-in-out" style="max-height: ${isOpen ? '400px' : '0px'}; opacity: ${isOpen ? '1' : '0'}; margin-top: ${isOpen ? '14px' : '0px'}">
+              <div class="pl-8 text-sm sm:text-[14.5px] text-[#a1a1aa] leading-relaxed text-justify border-t border-gold-primary/8 pt-3.5 mt-3.5 font-sans">
+                ${formattedAnswer}
+              </div>
+            </div>
+          `;
+
+          card.addEventListener('click', () => {
+            openFaqIdx = isOpen ? null : idx;
+            renderFAQs();
+          });
+
+          listContainer.appendChild(card);
+        });
+      }
+
+      lucide.createIcons({
+        root: listContainer
+      });
+    }
+
+    // Assign hook for multi-language switcher
+    window.onLanguageChange = function() {
+      renderFAQs();
+    };
+
+    // DOM Setup
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize current year in footer
+      const yearEl = document.getElementById('current-year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+      renderFAQs();
+
+      const searchInput = document.getElementById('faq-search-input');
+      const searchClear = document.getElementById('faq-search-clear');
+
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          searchQuery = e.target.value;
+          openFaqIdx = null;
+          
+          if (searchQuery.trim().length > 0) {
+            searchClear.classList.remove('hidden');
+          } else {
+            searchClear.classList.add('hidden');
+          }
+
+          renderFAQs();
+        });
+      }
+
+      if (searchClear) {
+        searchClear.addEventListener('click', () => {
+          if (searchInput) {
+            searchInput.value = '';
+            searchQuery = '';
+            searchClear.classList.add('hidden');
+            openFaqIdx = null;
+            renderFAQs();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
