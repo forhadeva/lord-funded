@@ -1,0 +1,1794 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lord Funded | Premium Prop Trading Evaluation Firm</title>
+  <meta name="description" content="Trade simulated accounts up to $500,000 with Lord Funded. Keep up to 90% profit split, zero time limits, balance-based drawdown, and bi-weekly payouts." />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              primary: '#d4af37',
+              light: '#fbe69e',
+              dark: '#aa7c11',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=1.2" />
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-[#050506] text-white font-sans min-h-screen overflow-x-hidden line-height-1.6">
+
+  <!-- Floating Messages Toast -->
+  {% if messages %}
+    <div id="messages-toast-container" class="fixed top-24 right-6 z-[2000] flex flex-col gap-3 max-w-sm w-full pointer-events-none">
+      {% for message in messages %}
+        <div class="message-toast pointer-events-auto flex items-center justify-between gap-3.5 p-4 rounded-xl border bg-[#0a0a0c]/95 border-gold-primary/20 text-white shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-md transition-all duration-300 transform translate-x-0 opacity-100">
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-lg {% if message.tags == 'error' %}bg-[#ef4444]/10 text-[#ef4444]{% else %}bg-[#10b981]/10 text-[#10b981]{% endif %} flex items-center justify-center flex-shrink-0">
+              <i data-lucide="{% if message.tags == 'error' %}alert-circle{% else %}check-circle-2{% endif %}" class="w-4 h-4"></i>
+            </div>
+            <span class="text-xs font-semibold leading-normal font-sans">{{ message }}</span>
+          </div>
+          <button onclick="this.parentElement.remove()" class="text-[#61616a] hover:text-white cursor-pointer transition-colors border-none bg-transparent flex items-center justify-center">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const toasts = document.querySelectorAll('.message-toast');
+          toasts.forEach(toast => {
+            toast.style.transform = 'translateX(100px)';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+          });
+        }, 5000);
+      });
+    </script>
+  {% endif %}
+
+  <!-- ================= NAVBAR START ================= -->
+  <nav class="fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 py-6 border-b border-transparent">
+    <div class="container mx-auto flex items-center justify-between">
+      <!-- Logo -->
+      <a href="{% url 'index' %}" class="flex items-center gap-2">
+        <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline-block align-middle" style="filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.7));">
+          <defs>
+            <linearGradient id="lfGoldGradient" gradientUnits="userSpaceOnUse" x1="10" y1="90" x2="90" y2="10">
+              <stop offset="0%" stop-color="#9A7432" />
+              <stop offset="20%" stop-color="#CBA358" />
+              <stop offset="50%" stop-color="#F7E5A9" />
+              <stop offset="80%" stop-color="#D8B467" />
+              <stop offset="100%" stop-color="#9A7432" />
+            </linearGradient>
+            <linearGradient id="lfBoxBg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="rgba(15, 14, 12, 0.95)" />
+              <stop offset="50%" stop-color="rgba(8, 8, 10, 0.98)" />
+              <stop offset="100%" stop-color="rgba(4, 4, 5, 1)" />
+            </linearGradient>
+          </defs>
+          <rect x="6" y="6" width="88" height="88" rx="22" stroke="url(#lfGoldGradient)" stroke-width="4" fill="url(#lfBoxBg)" />
+          <circle cx="50" cy="50" r="34" fill="rgba(212, 175, 55, 0.32)" style="filter: blur(10px);" />
+          <image href="{% static 'images/logo.png' %}" x="12" y="10" width="76" height="80" />
+        </svg>
+        <span class="font-heading font-extrabold text-2xl tracking-[0.05em] uppercase">
+          Lord <span class="text-gold-gradient">Funded</span>
+        </span>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="desktop-menu hidden md:flex items-center gap-8">
+        <a href="{% url 'about' %}" class="font-heading text-sm font-medium text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="about">About</a>
+        <a href="{% url 'index' %}#features" class="font-heading text-sm font-medium text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="features">Features</a>
+        <a href="{% url 'how_it_works' %}" class="font-heading text-sm font-medium text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="howItWorks">How it Works</a>
+        <a href="{% url 'challenges' %}" class="font-heading text-sm font-medium text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="challenges">Challenges</a>
+        <a href="{% url 'faq' %}" class="font-heading text-sm font-medium text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="faq">FAQ</a>
+        <a href="{% url 'affiliate' %}" class="font-heading text-sm font-medium text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="affiliate">Affiliate</a>
+      </div>
+
+      <!-- Desktop Buttons -->
+      <div class="desktop-menu hidden md:flex items-center gap-3">
+        <!-- Language Switcher -->
+        <div class="relative">
+          <button id="lang-toggle-btn" class="flex items-center gap-1.5 bg-none border border-white/10 rounded-[10px] px-3 py-1.5 cursor-pointer text-[#a1a1aa] font-heading text-xs font-semibold hover:border-gold-primary/30 hover:text-white transition-all">
+            <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+            <span><span class="active-lang-flag">🇺🇸</span> <span class="active-lang-label">EN</span></span>
+            <i data-lucide="chevron-down" class="chevron-icon w-3 h-3 transition-transform duration-200"></i>
+          </button>
+          
+          <div id="lang-dropdown-menu" class="absolute right-0 top-[calc(100%+8px)] hidden bg-[#0e0d0a]/95 border border-gold-primary/20 rounded-[14px] p-1.5 min-w-[160px] backdrop-blur-[20px] shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
+            <button data-lang-code="en" class="lang-btn-option flex items-center gap-2.5 w-full px-3.5 py-2.5 rounded-[10px] border-none cursor-pointer font-heading text-xs font-semibold text-left transition-all">
+              <span class="text-base">🇺🇸</span>
+              <span>English</span>
+              <span class="lang-check ml-auto text-gold-primary hidden">✓</span>
+            </button>
+            <button data-lang-code="es" class="lang-btn-option flex items-center gap-2.5 w-full px-3.5 py-2.5 rounded-[10px] border-none cursor-pointer font-heading text-xs font-semibold text-left transition-all">
+              <span class="text-base">🇪🇸</span>
+              <span>Español</span>
+              <span class="lang-check ml-auto text-gold-primary hidden">✓</span>
+            </button>
+            <button data-lang-code="fr" class="lang-btn-option flex items-center gap-2.5 w-full px-3.5 py-2.5 rounded-[10px] border-none cursor-pointer font-heading text-xs font-semibold text-left transition-all">
+              <span class="text-base">🇫🇷</span>
+              <span>Français</span>
+              <span class="lang-check ml-auto text-gold-primary hidden">✓</span>
+            </button>
+          </div>
+        </div>
+
+        {% if user.is_authenticated %}
+        <span class="text-xs text-[#a1a1aa] font-heading font-bold select-none mr-2 flex items-center gap-1.5">
+          <i data-lucide="user" class="w-3.5 h-3.5 text-gold-primary"></i>
+          {{ user.username }}
+        </span>
+        <a href="{% url 'logout' %}" class="btn btn-secondary btn-sm inline-flex items-center gap-1.5">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span>Logout</span>
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-secondary btn-sm inline-flex items-center gap-1.5">
+          <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+          <span data-i18n="login">Login</span>
+        </a>
+        <a href="{% url 'signup' %}" class="btn btn-primary btn-sm inline-flex items-center gap-1.5">
+          <span data-i18n="getStarted">Get Started</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- Mobile Toggle Button -->
+      <button id="mobile-toggle-btn" class="md:hidden bg-none border-none text-white cursor-pointer mr-3">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-drawer" class="hidden absolute top-full left-0 right-0 mobile-drawer-blur p-6 flex-col gap-5 shadow-[0_8px_40px_rgba(212,175,55,0.08)]">
+      <a href="{% url 'about' %}" class="font-heading text-base font-semibold text-[#a1a1aa]" data-i18n="about">About</a>
+      <a href="{% url 'index' %}#features" class="font-heading text-base font-semibold text-[#a1a1aa]" data-i18n="features">Features</a>
+      <a href="{% url 'how_it_works' %}" class="font-heading text-base font-semibold text-[#a1a1aa]" data-i18n="howItWorks">How it Works</a>
+      <a href="{% url 'challenges' %}" class="font-heading text-base font-semibold text-[#a1a1aa]" data-i18n="challenges">Challenges</a>
+      <a href="{% url 'faq' %}" class="font-heading text-base font-semibold text-[#a1a1aa]" data-i18n="faq">FAQ</a>
+      <a href="{% url 'affiliate' %}" class="font-heading text-base font-semibold text-[#a1a1aa]" data-i18n="affiliate">Affiliate</a>
+      
+      <!-- Mobile Lang Selector -->
+      <div class="flex gap-2 py-2 border-t border-b border-white/5 mt-1">
+        <button data-lang-code="en" class="mobile-lang-btn flex-1 py-2.5 rounded-[10px] border border-white/5 bg-[#0e0d0a]/50 text-[#a1a1aa] font-heading text-xs font-semibold flex items-center justify-center gap-1.5">
+          <span>🇺🇸</span> English
+        </button>
+        <button data-lang-code="es" class="mobile-lang-btn flex-1 py-2.5 rounded-[10px] border border-white/5 bg-[#0e0d0a]/50 text-[#a1a1aa] font-heading text-xs font-semibold flex items-center justify-center gap-1.5">
+          <span>🇪🇸</span> Español
+        </button>
+        <button data-lang-code="fr" class="mobile-lang-btn flex-1 py-2.5 rounded-[10px] border border-white/5 bg-[#0e0d0a]/50 text-[#a1a1aa] font-heading text-xs font-semibold flex items-center justify-center gap-1.5">
+          <span>🇫🇷</span> Français
+        </button>
+      </div>
+
+      {% if user.is_authenticated %}
+      <div class="flex items-center justify-center gap-2 py-2 border-b border-white/5 text-[#a1a1aa] font-heading text-sm font-semibold select-none">
+        <i data-lucide="user" class="w-4 h-4 text-gold-primary"></i>
+        {{ user.username }}
+      </div>
+      <a href="{% url 'logout' %}" class="btn btn-secondary w-full justify-center mt-2">
+        <i data-lucide="log-out" class="w-4.5 h-4.5"></i>
+        <span>Logout</span>
+      </a>
+      {% else %}
+      <a href="{% url 'login' %}" class="btn btn-secondary w-full justify-center mt-2">
+        <i data-lucide="log-in" class="w-4.5 h-4.5"></i>
+        <span data-i18n="login">Login</span>
+      </a>
+      <a href="{% url 'signup' %}" class="btn btn-primary w-full justify-center">
+        <span data-i18n="getStarted">Get Started</span>
+        <i data-lucide="arrow-right" class="w-4.5 h-4.5"></i>
+      </a>
+      {% endif %}
+    </div>
+  </nav>
+  <!-- ================= NAVBAR END ================= -->
+
+
+  <!-- ================= HERO START ================= -->
+  <section id="hero" class="relative py-40 min-h-[90vh] flex items-center overflow-hidden">
+    <div class="bg-grid"></div>
+    <div class="glow-overlay w-[500px] h-[500px] top-[-10%] right-[-10%] opacity-15"></div>
+    <div class="glow-overlay w-[400px] h-[400px] bottom-[-10%] left-[-10%] opacity-10"></div>
+    
+    <div class="container mx-auto relative z-10">
+      <div class="grid md:grid-cols-2 items-center gap-12 md:gap-8 text-center md:text-left">
+        <!-- Text Column -->
+        <div class="flex flex-col items-center md:items-start scroll-trigger fade-in-left">
+          <div class="inline-flex items-center gap-2 bg-gold-primary/8 border border-gold-primary/25 px-4 py-2 rounded-full text-xs font-heading font-semibold text-gold-primary uppercase tracking-[0.05em] mb-6">
+            <i data-lucide="award" class="w-4 h-4 text-gold-primary"></i>
+            <span data-i18n="heroTag">The Ultimate Proprietary Trading Firm</span>
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold tracking-tight text-white leading-[1.1] mb-5">
+            <span data-i18n="heroTitle1">Trade Our Capital.</span><br />
+            <span data-i18n="heroTitle2">Keep Up To</span> <span class="text-gold-gradient">90% <span data-i18n="heroTitle3">Profit.</span></span>
+          </h1>
+
+          <p class="text-base sm:text-lg text-[#a1a1aa] mb-8 max-w-[540px] leading-relaxed">
+            <span data-i18n="heroDesc">Pass our simplified evaluation challenge and secure simulated trading accounts up to</span>
+            <strong class="text-gold-primary font-bold">$500,000</strong><span data-i18n="heroDesc2">. Trade with low limits, maximum leverage, and zero time pressure.</span>
+          </p>
+
+          <div class="flex flex-wrap gap-4 mb-10 justify-center md:justify-start w-full">
+            <a href="#challenges" class="btn btn-primary">
+              <span data-i18n="heroBtn1">Get Funded Now</span>
+              <i data-lucide="arrow-right" class="w-4.5 h-4.5"></i>
+            </a>
+            <a href="{% url 'how_it_works' %}" class="btn btn-secondary">
+              <span data-i18n="heroBtn2">How It Works</span>
+            </a>
+          </div>
+
+          <!-- Bullet Points -->
+          <div class="flex flex-col gap-3 w-full text-left max-w-sm sm:max-w-md">
+            <div class="flex items-center gap-2.5">
+              <i data-lucide="circle-check" class="w-4.5 h-4.5 text-gold-primary flex-shrink-0"></i>
+              <span class="text-sm sm:text-base text-white" data-i18n="heroBullet1">100% Refundable Fee upon your first payout</span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <i data-lucide="circle-check" class="w-4.5 h-4.5 text-gold-primary flex-shrink-0"></i>
+              <span class="text-sm sm:text-base text-white" data-i18n="heroBullet2">No Minimum trading days requirement</span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <i data-lucide="circle-check" class="w-4.5 h-4.5 text-gold-primary flex-shrink-0"></i>
+              <span class="text-sm sm:text-base text-white" data-i18n="heroBullet3">News trading & Expert Advisors (EAs) fully allowed</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3D Statue Visual Column -->
+        <div class="relative flex justify-center items-center scroll-trigger fade-in-right">
+          <div class="ht-root relative w-full h-[420px] sm:h-[520px] lg:h-[650px] flex items-center justify-center overflow-hidden">
+            <!-- Glow Blobs -->
+            <div class="ht-blob ht-blob-1 absolute rounded-full pointer-events-none z-0 w-[400px] h-[320px] top-[15%] right-[10%] filter blur-[40px] opacity-100" style="background: radial-gradient(ellipse, rgba(212,175,55,0.18), transparent 70%);"></div>
+            <div class="ht-blob ht-blob-2 absolute rounded-full pointer-events-none z-0 w-[300px] h-[250px] bottom-[15%] left-[10%] filter blur-[35px] opacity-100" style="background: radial-gradient(ellipse, rgba(212,175,55,0.1), transparent 70%);"></div>
+            
+            <!-- Lord Image container -->
+            <div class="ht-lord-bg-container absolute w-full h-full inset-0 flex items-center justify-center pointer-events-none z-[2]">
+              <div class="ht-lord-wrapper relative w-full h-full flex items-center justify-center">
+                <img src="{% static 'images/lord.png' %}" alt="Lord Jesus Christ" class="ht-lord-bg-img h-full w-auto object-contain filter drop-shadow-[0_0_35px_rgba(212,175,55,0.4)] animate-float-lord" style="clip-path: inset(0 0 19% 0); -webkit-mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 95%); mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 95%);" />
+                <div class="ht-lord-text-overlay absolute bottom-[12%] flex flex-col items-center justify-center text-center w-full px-2.5">
+                  <div class="ht-lord-title font-heading font-medium text-2xl text-gold-primary tracking-[0.15em] uppercase drop-shadow-[0_0_12px_rgba(212,175,55,0.6)] leading-[1.2]">Guided by Faith</div>
+                  <div class="ht-lord-subtitle font-sans text-xs tracking-[0.25em] text-[#e2e8f0] uppercase mt-1.5 opacity-90 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">Powered by Capital</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Dynamic particles (24 SMIL animated circles) -->
+            <svg class="ht-particles absolute inset-0 w-full h-full pointer-events-none z-[3]" viewBox="0 0 500 480">
+              <circle cx="30" cy="20" r="1.8" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="4s" begin="0s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="20;10;20" dur="4s" begin="0s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="103" cy="67" r="1" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="5s" begin="0.4s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="67;57;67" dur="5s" begin="0.4s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="176" cy="114" r="2.6" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="6s" begin="0.8s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="114;104;114" dur="6s" begin="0.8s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="249" cy="161" r="1.8" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="4s" begin="1.2s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="161;151;161" dur="4s" begin="1.2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="322" cy="208" r="1" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="5s" begin="1.6s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="208;198;208" dur="5s" begin="1.6s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="395" cy="255" r="2.6" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="6s" begin="2s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="255;245;255" dur="6s" begin="2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="468" cy="302" r="1.8" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="4s" begin="2.4s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="302;292;302" dur="4s" begin="2.4s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="41" cy="349" r="1" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="5s" begin="2.8s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="349;339;349" dur="5s" begin="2.8s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="114" cy="396" r="2.6" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="6s" begin="3.2s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="396;386;396" dur="6s" begin="3.2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="187" cy="443" r="1.8" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="4s" begin="3.6s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="443;433;443" dur="4s" begin="3.6s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="260" cy="50" r="1" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="5s" begin="4s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="50;40;50" dur="5s" begin="4s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="333" cy="97" r="2.6" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="6s" begin="4.4s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="97;87;97" dur="6s" begin="4.4s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="406" cy="144" r="1.8" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="4s" begin="4.8s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="144;134;144" dur="4s" begin="4.8s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="479" cy="191" r="1" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="5s" begin="0.2s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="191;181;191" dur="5s" begin="0.2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="52" cy="238" r="2.6" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="6s" begin="0.6s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="238;228;238" dur="6s" begin="0.6s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="125" cy="285" r="1.8" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="4s" begin="1s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="285;275;285" dur="4s" begin="1s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="198" cy="332" r="1" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="5s" begin="1.4s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="332;322;332" dur="5s" begin="1.4s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="271" cy="379" r="2.6" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="6s" begin="1.8s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="379;369;379" dur="6s" begin="1.8s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="344" cy="426" r="1.8" fill="#d4af37" opacity="0">
+                <animate attributeName="opacity" values="0;0.7;0" dur="4s" begin="2.2s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="426;416;426" dur="4s" begin="2.2s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= HERO END ================= -->
+
+
+  <!-- ================= METRICS START ================= -->
+  <section id="metrics" class="relative py-5 md:py-20 z-10 scroll-trigger fade-in-up">
+    <div class="container mx-auto">
+      <div class="glass-panel p-6 sm:p-10 shadow-[0_0_25px_rgba(212,175,55,0.15)] border border-gold-primary/15">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <!-- Profit Split Metric -->
+          <div class="flex flex-col items-center p-4 text-center relative scroll-trigger fade-in-up">
+            <div class="bg-gold-primary/8 border border-gold-primary/15 w-12 h-12 rounded-full mb-4 flex items-center justify-center text-gold-primary">
+              <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+            </div>
+            <div class="text-3xl sm:text-4xl font-heading font-extrabold text-gold-gradient mb-1">Up to <span class="counter-val" data-target="90">0</span>%</div>
+            <div class="font-heading text-sm font-semibold text-white mb-1">Profit Split</div>
+            <div class="text-xs text-[#a1a1aa] max-w-[220px]">Keep the lion's share of your gains</div>
+            <div class="hidden lg:block absolute right-[-12px] top-[20%] h-[60%] w-[1px]" style="background: linear-gradient(to bottom, transparent, rgba(212, 175, 55, 0.2), transparent);"></div>
+          </div>
+
+          <!-- Max Account Size Metric -->
+          <div class="flex flex-col items-center p-4 text-center relative scroll-trigger fade-in-up delay-100">
+            <div class="bg-gold-primary/8 border border-gold-primary/15 w-12 h-12 rounded-full mb-4 flex items-center justify-center text-gold-primary">
+              <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <div class="text-3xl sm:text-4xl font-heading font-extrabold text-gold-gradient mb-1">$<span class="counter-val" data-target="500000" data-format="comma">0</span></div>
+            <div class="font-heading text-sm font-semibold text-white mb-1">Max Account Size</div>
+            <div class="text-xs text-[#a1a1aa] max-w-[220px]">Scale up to $2M total funding</div>
+            <div class="hidden lg:block absolute right-[-12px] top-[20%] h-[60%] w-[1px]" style="background: linear-gradient(to bottom, transparent, rgba(212, 175, 55, 0.2), transparent);"></div>
+          </div>
+
+          <!-- Payout Speed Metric -->
+          <div class="flex flex-col items-center p-4 text-center relative scroll-trigger fade-in-up delay-200">
+            <div class="bg-gold-primary/8 border border-gold-primary/15 w-12 h-12 rounded-full mb-4 flex items-center justify-center text-gold-primary">
+              <i data-lucide="zap" class="w-6 h-6"></i>
+            </div>
+            <div class="text-3xl sm:text-4xl font-heading font-extrabold text-gold-gradient mb-1"><span class="counter-val" data-target="24">0</span> Hours</div>
+            <div class="font-heading text-sm font-semibold text-white mb-1">Average Payout Time</div>
+            <div class="text-xs text-[#a1a1aa] max-w-[220px]">Bi-weekly requests processed fast</div>
+            <div class="hidden lg:block absolute right-[-12px] top-[20%] h-[60%] w-[1px]" style="background: linear-gradient(to bottom, transparent, rgba(212, 175, 55, 0.2), transparent);"></div>
+          </div>
+
+          <!-- Paid Out Metric -->
+          <div class="flex flex-col items-center p-4 text-center relative scroll-trigger fade-in-up delay-300">
+            <div class="bg-gold-primary/8 border border-gold-primary/15 w-12 h-12 rounded-full mb-4 flex items-center justify-center text-gold-primary">
+              <i data-lucide="globe" class="w-6 h-6"></i>
+            </div>
+            <div class="text-3xl sm:text-4xl font-heading font-extrabold text-gold-gradient mb-1">$<span class="counter-val" data-target="48">0</span>M+</div>
+            <div class="font-heading text-sm font-semibold text-white mb-1">Simulated Paid Out</div>
+            <div class="text-xs text-[#a1a1aa] max-w-[220px]">Trusted by elite global traders</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= METRICS END ================= -->
+
+
+  <!-- ================= FEATURES START ================= -->
+  <section id="features" class="relative py-24 bg-gradient-to-b from-[#050506] via-[#0a0a0c] to-[#050506] overflow-hidden">
+    <div class="glow-overlay w-[500px] h-[500px] top-[30%] left-[50%] -translate-x-1/2 -translate-y-1/2 opacity-5"></div>
+    <div class="container mx-auto">
+      <div class="text-center mb-[60px] scroll-trigger fade-in-up">
+        <div class="font-heading text-sm font-bold text-gold-primary uppercase tracking-[0.1em] mb-3" data-i18n="featuresTag">
+          Elite Trading Infrastructure
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-heading font-extrabold text-white mb-4">
+          <span data-i18n="featuresTitle1">Designed by Traders,</span> <span class="text-gold-gradient" data-i18n="featuresTitle2">For Traders</span>
+        </h2>
+        <p class="text-[#a1a1aa] max-w-[600px] mx-auto text-base" data-i18n="featuresDesc">
+          We eliminate restrictive rules and slow payouts to give you a transparent, premium prop trading environment.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Feature 1 -->
+        <div class="glass-panel p-9 text-left flex flex-col items-start h-full scroll-trigger fade-in-up">
+          <div class="bg-gold-primary/6 border border-gold-primary/20 p-4 rounded-xl mb-6 flex items-center justify-center shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
+            <i data-lucide="calendar" class="w-7 h-7 text-gold-primary"></i>
+          </div>
+          <h3 class="font-heading text-xl font-bold text-white mb-3" data-i18n="feat1Title">Bi-Weekly Payouts</h3>
+          <p class="text-sm text-[#a1a1aa] leading-relaxed" data-i18n="feat1Desc">
+            Request your simulated profit share every 14 days. Withdraw securely via multiple crypto networks or direct bank transfers.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="glass-panel p-9 text-left flex flex-col items-start h-full scroll-trigger fade-in-up delay-100">
+          <div class="bg-gold-primary/6 border border-gold-primary/20 p-4 rounded-xl mb-6 flex items-center justify-center shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
+            <i data-lucide="shield-check" class="w-7 h-7 text-gold-primary"></i>
+          </div>
+          <h3 class="font-heading text-xl font-bold text-white mb-3" data-i18n="feat2Title">Balance-Based Drawdown</h3>
+          <p class="text-sm text-[#a1a1aa] leading-relaxed" data-i18n="feat2Desc">
+            Daily drawdown limit is calculated based on starting daily balance rather than equity, preventing unfair rule violations.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="glass-panel p-9 text-left flex flex-col items-start h-full scroll-trigger fade-in-up delay-200">
+          <div class="bg-gold-primary/6 border border-gold-primary/20 p-4 rounded-xl mb-6 flex items-center justify-center shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
+            <i data-lucide="percent" class="w-7 h-7 text-gold-primary"></i>
+          </div>
+          <h3 class="font-heading text-xl font-bold text-white mb-3" data-i18n="feat3Title">No Time Limits</h3>
+          <p class="text-sm text-[#a1a1aa] leading-relaxed" data-i18n="feat3Desc">
+            Pass your evaluation at your own pace. Trade as conservatively or aggressively as your trading plan demands.
+          </p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="glass-panel p-9 text-left flex flex-col items-start h-full scroll-trigger fade-in-up">
+          <div class="bg-gold-primary/6 border border-gold-primary/20 p-4 rounded-xl mb-6 flex items-center justify-center shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
+            <i data-lucide="refresh-cw" class="w-7 h-7 text-gold-primary"></i>
+          </div>
+          <h3 class="font-heading text-xl font-bold text-white mb-3" data-i18n="feat4Title">Refundable Registration Fees</h3>
+          <p class="text-sm text-[#a1a1aa] leading-relaxed" data-i18n="feat4Desc">
+            Receive 100% of your evaluation fee back on your very first payout. Zero final cost for skilled traders.
+          </p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="glass-panel p-9 text-left flex flex-col items-start h-full scroll-trigger fade-in-up delay-100">
+          <div class="bg-gold-primary/6 border border-gold-primary/20 p-4 rounded-xl mb-6 flex items-center justify-center shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
+            <i data-lucide="scale" class="w-7 h-7 text-gold-primary"></i>
+          </div>
+          <h3 class="font-heading text-xl font-bold text-white mb-3" data-i18n="feat5Title">Up to 1:100 Leverage</h3>
+          <p class="text-sm text-[#a1a1aa] leading-relaxed" data-i18n="feat5Desc">
+            Trade major forex pairs, indices, metals, and crypto with high simulated leverage to optimize margin allocation.
+          </p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="glass-panel p-9 text-left flex flex-col items-start h-full scroll-trigger fade-in-up delay-200">
+          <div class="bg-gold-primary/6 border border-gold-primary/20 p-4 rounded-xl mb-6 flex items-center justify-center shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
+            <i data-lucide="award" class="w-7 h-7 text-gold-primary"></i>
+          </div>
+          <h3 class="font-heading text-xl font-bold text-white mb-3" data-i18n="feat6Title">Full Strategy Freedom</h3>
+          <p class="text-sm text-[#a1a1aa] leading-relaxed" data-i18n="feat6Desc">
+            Trade high-impact news events, run expert advisors (EAs), swing trade over weekends, and hedge positions freely.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= FEATURES END ================= -->
+
+
+  <!-- ================= THE LORD'S JOURNEY (ROADMAP) START ================= -->
+  <section id="how-it-works" class="relative py-28 bg-gradient-to-b from-[#050506] via-[#09090b] to-[#050506] overflow-hidden">
+    <style>
+      /* ================= THE LORD'S JOURNEY (ROADMAP) STYLES ================= */
+      .roadmap-container {
+        position: relative;
+      }
+      
+      /* Tilted Card Transformations (Alternating rotations & shifts like the reference) */
+      .roadmap-card-tilted-1 {
+        transform: rotate(-2.5deg) translateY(12px);
+      }
+      
+      .roadmap-card-tilted-2 {
+        transform: rotate(2deg) translateY(-8px);
+      }
+      
+      .roadmap-card-tilted-3 {
+        transform: rotate(-1.5deg) translateY(15px);
+      }
+      
+      .roadmap-card-tilted-4 {
+        transform: rotate(2.5deg) translateY(-4px);
+      }
+      
+      /* Card Glow background overlay */
+      .card-glow-bg {
+        position: absolute;
+        inset: -12px;
+        background: radial-gradient(circle at center, rgba(212, 175, 55, 0.08), transparent 70%);
+        filter: blur(28px);
+        opacity: 0;
+        border-radius: 30px;
+        pointer-events: none;
+        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 0;
+      }
+      
+      .roadmap-step-card-wrapper:hover .card-glow-bg {
+        opacity: 1;
+      }
+      
+      /* Glassmorphism Premium Cards */
+      .glass-panel-premium {
+        background: rgba(10, 10, 12, 0.55);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(212, 175, 55, 0.12);
+        border-radius: 22px;
+        padding: 34px 28px;
+        height: 100%;
+        position: relative;
+        z-index: 1;
+        overflow: visible; /* Needed for crown sticker overlay */
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                    border-color 0.5s ease,
+                    box-shadow 0.5s ease,
+                    background-color 0.5s ease;
+        will-change: transform, box-shadow;
+      }
+      
+      /* Smooth Rotation & Straighten Hover Effects */
+      .roadmap-step-card-wrapper:hover .glass-panel-premium {
+        border-color: rgba(212, 175, 55, 0.45);
+        box-shadow: 0 20px 45px rgba(212, 175, 55, 0.15), 
+                    0 0 35px rgba(212, 175, 55, 0.22);
+        background: rgba(18, 18, 22, 0.85);
+      }
+      
+      .roadmap-step-card-wrapper:hover .roadmap-card-tilted-1 {
+        transform: rotate(-0.5deg) translateY(-2px) scale(1.025);
+      }
+      
+      .roadmap-step-card-wrapper:hover .roadmap-card-tilted-2 {
+        transform: rotate(0.5deg) translateY(-14px) scale(1.025);
+      }
+      
+      .roadmap-step-card-wrapper:hover .roadmap-card-tilted-3 {
+        transform: rotate(-0.5deg) translateY(2px) scale(1.025);
+      }
+      
+      .roadmap-step-card-wrapper:hover .roadmap-card-tilted-4 {
+        transform: rotate(0.5deg) translateY(-10px) scale(1.025);
+      }
+      
+      /* Watermark step numbers inside cards */
+      .step-watermark {
+        position: absolute;
+        bottom: -15px;
+        right: -5px;
+        font-size: 130px;
+        font-weight: 900;
+        line-height: 1;
+        color: rgba(212, 175, 55, 0.035);
+        user-select: none;
+        pointer-events: none;
+        transition: color 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      
+      .roadmap-step-card-wrapper:hover .step-watermark {
+        color: rgba(212, 175, 55, 0.07);
+        transform: scale(1.05) translate(-5px, -5px);
+      }
+      
+      /* Crown sticker overlay popping out of Step 3 (Become Funded) */
+      .roadmap-crown-sticker {
+        position: absolute;
+        top: -28px;
+        right: -24px;
+        z-index: 25;
+        transform: rotate(15deg);
+        filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.55));
+        animation: float-crown-sticker-inline 4s infinite ease-in-out;
+        pointer-events: none;
+      }
+      
+      @keyframes float-crown-sticker-inline {
+        0%, 100% {
+          transform: rotate(15deg) translateY(0);
+        }
+        50% {
+          transform: rotate(18deg) translateY(-6px);
+        }
+      }
+      
+      /* Crown Icon container inside cards */
+      .crown-icon-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        background: rgba(212, 175, 55, 0.08);
+        border: 1px solid rgba(212, 175, 55, 0.22);
+        border-radius: 12px;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      
+      .roadmap-step-card-wrapper:hover .crown-icon-container {
+        background: var(--gold-gradient);
+        border-color: transparent;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.45);
+      }
+      
+      .roadmap-step-card-wrapper:hover .crown-icon-container i {
+        color: #000000 !important;
+      }
+      
+      /* Step Tags styling */
+      .step-tag {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--gold-primary);
+        letter-spacing: 0.12em;
+        background: rgba(212, 175, 55, 0.08);
+        border: 1px solid rgba(212, 175, 55, 0.15);
+        padding: 4px 10px;
+        border-radius: 20px;
+      }
+      
+      /* Highlighted card for "Become Funded" (Step 3) */
+      .highlighted-royal-card {
+        border: 1px solid rgba(212, 175, 55, 0.38) !important;
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(10, 10, 12, 0.95) 100%) !important;
+        box-shadow: 0 12px 35px rgba(212, 175, 55, 0.08);
+      }
+      
+      .highlighted-royal-card .step-tag {
+        color: #000000;
+        background: var(--gold-gradient);
+        border-color: transparent;
+      }
+      
+      /* Absolute positioned connecting arrows (desktop) */
+      .roadmap-connecting-arrow-wrapper {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 90px;
+        height: 60px;
+        z-index: 10;
+        pointer-events: none;
+      }
+      
+      .roadmap-connecting-arrow {
+        stroke: var(--gold-primary);
+        stroke-dasharray: 6, 6;
+        opacity: 0.7;
+        animation: arrow-dash-flow-inline 1.5s linear infinite;
+      }
+      
+      @keyframes arrow-dash-flow-inline {
+        to {
+          stroke-dashoffset: -24;
+        }
+      }
+      
+      /* Horizontal alignment classes for 4 cards spacing */
+      .arrow-pos-1 { left: calc(25% - 45px); }
+      .arrow-pos-2 { left: calc(50% - 45px); }
+      .arrow-pos-3 { left: calc(75% - 45px); }
+      
+      /* Feature Badges below the roadmap layout */
+      .roadmap-feature-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(212, 175, 55, 0.12);
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-family: var(--font-heading);
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        transition: all 0.3s ease;
+      }
+      
+      .roadmap-feature-badge:hover {
+        background: rgba(212, 175, 55, 0.04);
+        border-color: var(--gold-primary);
+        color: var(--text-primary);
+        transform: translateY(-2px);
+        box-shadow: var(--gold-glow);
+      }
+      
+      /* Mobile specific layout configurations */
+      @media (max-width: 1023px) {
+        .roadmap-card {
+          padding: 34px 28px;
+        }
+        
+        .step-watermark {
+          font-size: 110px;
+        }
+        
+        /* Reset horizontal tilts on mobile */
+        .roadmap-card-tilted-1,
+        .roadmap-card-tilted-2,
+        .roadmap-card-tilted-3,
+        .roadmap-card-tilted-4 {
+          transform: none !important;
+        }
+        
+        .roadmap-step-card-wrapper:hover .glass-panel-premium {
+          transform: translateY(-6px) scale(1.015) !important;
+        }
+        
+        .roadmap-crown-sticker {
+          top: -24px;
+          right: -10px;
+          transform: scale(0.8) rotate(15deg);
+        }
+      }
+    </style>
+
+    <!-- Glow Overlay effects -->
+    <div class="glow-overlay w-[450px] h-[450px] top-[10%] left-[-10%] opacity-10"></div>
+    <div class="glow-overlay w-[450px] h-[450px] bottom-[10%] right-[-10%] opacity-[0.08]"></div>
+    <div class="bg-grid"></div>
+
+    <div class="container mx-auto relative z-10">
+      <!-- Section Header -->
+      <div class="text-center mb-[80px] scroll-trigger fade-in-up">
+        <div class="inline-flex items-center gap-2 bg-gold-primary/8 border border-gold-primary/20 px-4.5 py-1.5 rounded-full text-xs font-heading font-semibold text-gold-primary uppercase tracking-[0.1em] mb-4.5">
+          <i data-lucide="crown" class="w-3.5 h-3.5 text-gold-primary animate-pulse"></i>
+          <span data-i18n="journeyTag">The Lord's Journey</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-white mb-5 leading-tight">
+          <span data-i18n="journeyTitle1">A Structured Path to</span> <span class="text-gold-gradient" data-i18n="journeyTitle2">Elite Funded Status</span>
+        </h2>
+        <p class="text-[#a1a1aa] max-w-[620px] mx-auto text-base sm:text-lg leading-relaxed" data-i18n="journeySubtitle">
+          A structured path from challenge to elite funded status.
+        </p>
+      </div>
+
+      <!-- Roadmap Flow Container (Staggered Tilted Cards Connected with Curved Dotted Arrows) -->
+      <div class="relative roadmap-container w-full py-10">
+        
+        <!-- Desktop Connection Arrows (Absolute positioned in gaps) -->
+        <!-- Card 1 -> Card 2 Arrow (Curving up-right) -->
+        <div class="hidden lg:block roadmap-connecting-arrow-wrapper arrow-pos-1">
+          <svg viewBox="0 0 90 60" fill="none" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <path class="roadmap-connecting-arrow" d="M 5 42 C 25 42, 60 18, 85 18" stroke="url(#arrowGoldGradient)" stroke-width="3" stroke-linecap="round" />
+            <path d="M 75 22 L 85 18 L 81 28" stroke="url(#arrowGoldGradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+            <defs>
+              <linearGradient id="arrowGoldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#8a640f" />
+                <stop offset="50%" stop-color="#fbe69e" />
+                <stop offset="100%" stop-color="#d4af37" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <!-- Card 2 -> Card 3 Arrow (Curving down-right) -->
+        <div class="hidden lg:block roadmap-connecting-arrow-wrapper arrow-pos-2">
+          <svg viewBox="0 0 90 60" fill="none" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <path class="roadmap-connecting-arrow" d="M 5 18 C 25 18, 60 42, 85 42" stroke="url(#arrowGoldGradient)" stroke-width="3" stroke-linecap="round" />
+            <path d="M 77 36 L 85 42 L 75 44" stroke="url(#arrowGoldGradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+          </svg>
+        </div>
+
+        <!-- Card 3 -> Card 4 Arrow (Curving up-right) -->
+        <div class="hidden lg:block roadmap-connecting-arrow-wrapper arrow-pos-3">
+          <svg viewBox="0 0 90 60" fill="none" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <path class="roadmap-connecting-arrow" d="M 5 42 C 25 42, 60 18, 85 18" stroke="url(#arrowGoldGradient)" stroke-width="3" stroke-linecap="round" />
+            <path d="M 75 22 L 85 18 L 81 28" stroke="url(#arrowGoldGradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+          </svg>
+        </div>
+
+        <!-- Roadmap Cards Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 relative z-10">
+          
+          <!-- Step 01 Card -->
+          <div class="roadmap-step-card-wrapper scroll-trigger fade-in-up">
+            <div class="card-glow-bg"></div>
+            <!-- Staggered & Tilted Card -->
+            <div class="roadmap-card glass-panel-premium group roadmap-card-tilted-1">
+              <div class="relative h-full flex flex-col justify-between">
+                <div>
+                  <div class="step-watermark font-heading">01</div>
+                  
+                  <div class="flex items-center justify-between mb-6">
+                    <span class="step-tag font-heading" data-i18n="journeyStep1Tag">STEP 01</span>
+                    <div class="crown-icon-container">
+                      <i data-lucide="swords" class="w-5 h-5 text-gold-primary transition-transform duration-300 group-hover:scale-110"></i>
+                    </div>
+                  </div>
+                  
+                  <h3 class="text-xl sm:text-2xl font-heading font-extrabold text-white mb-3 tracking-tight group-hover:text-gold-light transition-colors" data-i18n="journeyStep1Title">
+                    Accept The Challenge
+                  </h3>
+                  <p class="text-sm text-[#a1a1aa] leading-relaxed transition-colors group-hover:text-white" data-i18n="journeyStep1Desc">
+                    Pass the evaluation while respecting all risk rules.
+                  </p>
+                </div>
+                
+                <!-- Premium Micro Details list -->
+                <div class="step-micro-details mt-6 pt-4 border-t border-gold-primary/8 flex flex-col gap-2.5 opacity-60 group-hover:opacity-100 transition-opacity">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-3.5 h-3.5 text-gold-primary flex-shrink-0"></i>
+                    <span class="text-xs text-[#a1a1aa]">No Minimum Trading Days</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-3.5 h-3.5 text-gold-primary flex-shrink-0"></i>
+                    <span class="text-xs text-[#a1a1aa]">Static Drawdown Limit</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Connector Arrow 1 -->
+          <div class="block lg:hidden w-full text-center my-4 relative z-10">
+            <svg viewBox="0 0 40 60" fill="none" class="w-10 h-12 mx-auto" xmlns="http://www.w3.org/2000/svg">
+              <path class="roadmap-connecting-arrow" d="M 12 5 C 28 20, 28 40, 12 55" stroke="url(#arrowGoldGradientVertical)" stroke-width="3" stroke-linecap="round" />
+              <path d="M 8 47 L 12 55 L 18 49" stroke="url(#arrowGoldGradientVertical)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+              <defs>
+                <linearGradient id="arrowGoldGradientVertical" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#8a640f" />
+                  <stop offset="50%" stop-color="#fbe69e" />
+                  <stop offset="100%" stop-color="#d4af37" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+
+          <!-- Step 02 Card -->
+          <div class="roadmap-step-card-wrapper scroll-trigger fade-in-up" data-delay="100">
+            <div class="card-glow-bg"></div>
+            <!-- Staggered & Tilted Card -->
+            <div class="roadmap-card glass-panel-premium group roadmap-card-tilted-2">
+              <div class="relative h-full flex flex-col justify-between">
+                <div>
+                  <div class="step-watermark font-heading">02</div>
+                  <div class="flex items-center justify-between mb-6">
+                    <span class="step-tag font-heading" data-i18n="journeyStep2Tag">STEP 02</span>
+                    <div class="crown-icon-container">
+                      <i data-lucide="shield-check" class="w-5 h-5 text-gold-primary transition-transform duration-300 group-hover:scale-110"></i>
+                    </div>
+                  </div>
+                  <h3 class="text-xl sm:text-2xl font-heading font-extrabold text-white mb-3 tracking-tight group-hover:text-gold-light transition-colors" data-i18n="journeyStep2Title">
+                    Earn Your Crown
+                  </h3>
+                  <p class="text-sm text-[#a1a1aa] leading-relaxed transition-colors group-hover:text-white" data-i18n="journeyStep2Desc">
+                    Complete verification and prove trading consistency.
+                  </p>
+                </div>
+                <div class="step-micro-details mt-6 pt-4 border-t border-gold-primary/8 flex flex-col gap-2.5 opacity-60 group-hover:opacity-100 transition-opacity">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-3.5 h-3.5 text-gold-primary flex-shrink-0"></i>
+                    <span class="text-xs text-[#a1a1aa]">Reduced 5% Profit Target</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-3.5 h-3.5 text-gold-primary flex-shrink-0"></i>
+                    <span class="text-xs text-[#a1a1aa]">Consistent Risk Profiles</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Connector Arrow 2 -->
+          <div class="block lg:hidden w-full text-center my-4 relative z-10">
+            <svg viewBox="0 0 40 60" fill="none" class="w-10 h-12 mx-auto" xmlns="http://www.w3.org/2000/svg">
+              <path class="roadmap-connecting-arrow" d="M 12 5 C 28 20, 28 40, 12 55" stroke="url(#arrowGoldGradientVertical)" stroke-width="3" stroke-linecap="round" />
+              <path d="M 8 47 L 12 55 L 18 49" stroke="url(#arrowGoldGradientVertical)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+            </svg>
+          </div>
+
+          <!-- Step 03 Card -->
+          <div class="roadmap-step-card-wrapper scroll-trigger fade-in-up" data-delay="200">
+            <div class="card-glow-bg"></div>
+            <!-- Highlighted Premium Gold Gradient Tilted Card -->
+            <div class="roadmap-card glass-panel-premium group highlighted-royal-card roadmap-card-tilted-3">
+              
+              <!-- Crown drawing sticker overlay (exactly like reference crown sticker) -->
+              <div class="roadmap-crown-sticker">
+                <svg width="70" height="60" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 4px 12px rgba(0,0,0,0.45));">
+                  <path d="M 10 70 L 15 30 L 35 50 L 50 15 L 65 50 L 85 30 L 90 70 Z" fill="url(#stickerCrownBg)" stroke="#d4af37" stroke-width="3.5" stroke-linejoin="round" />
+                  <path d="M 10 60 L 90 60" stroke="#aa7c11" stroke-width="2.5" />
+                  <circle cx="15" cy="30" r="4.5" fill="#fbe69e" stroke="#d4af37" stroke-width="1.5" />
+                  <circle cx="50" cy="15" r="5" fill="#fbe69e" stroke="#d4af37" stroke-width="1.5" />
+                  <circle cx="85" cy="30" r="4.5" fill="#fbe69e" stroke="#d4af37" stroke-width="1.5" />
+                  <circle cx="30" cy="65" r="2.5" fill="#ffffff" />
+                  <circle cx="50" cy="65" r="2.5" fill="#fbe69e" />
+                  <circle cx="70" cy="65" r="2.5" fill="#ffffff" />
+                  <defs>
+                    <linearGradient id="stickerCrownBg" x1="0%" y1="100%" x2="0%" y2="0%">
+                      <stop offset="0%" stop-color="#8a640f" />
+                      <stop offset="50%" stop-color="#d4af37" />
+                      <stop offset="100%" stop-color="#fbe69e" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+
+              <div class="relative h-full flex flex-col justify-between">
+                <div>
+                  <div class="step-watermark font-heading">03</div>
+                  <div class="flex items-center justify-between mb-6">
+                    <span class="step-tag font-heading" data-i18n="journeyStep3Tag">STEP 03</span>
+                    <div class="crown-icon-container bg-gold-primary/20 border border-gold-primary/45 shadow-[0_0_12px_rgba(212,175,55,0.3)]">
+                      <i data-lucide="crown" class="w-5 h-5 text-gold-light transition-transform duration-300 group-hover:rotate-12"></i>
+                    </div>
+                  </div>
+                  <h3 class="text-xl sm:text-2xl font-heading font-extrabold text-white mb-3 tracking-tight group-hover:text-gold-light transition-colors" data-i18n="journeyStep3Title">
+                    Become Funded
+                  </h3>
+                  <p class="text-sm text-[#a1a1aa] leading-relaxed transition-colors group-hover:text-white" data-i18n="journeyStep3Desc">
+                    Receive a funded account and earn up to 90% profit split.
+                  </p>
+                </div>
+                <div class="step-micro-details mt-6 pt-4 border-t border-gold-primary/15 flex flex-col gap-2.5 opacity-70 group-hover:opacity-100 transition-opacity">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-3.5 h-3.5 text-gold-light flex-shrink-0"></i>
+                    <span class="text-xs text-[#e2e8f0]">Refundable Registration Fee</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-3.5 h-3.5 text-gold-light flex-shrink-0"></i>
+                    <span class="text-xs text-[#e2e8f0]">Up to 90% Payout Share</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Connector Arrow 3 -->
+          <div class="block lg:hidden w-full text-center my-4 relative z-10">
+            <svg viewBox="0 0 40 60" fill="none" class="w-10 h-12 mx-auto" xmlns="http://www.w3.org/2000/svg">
+              <path class="roadmap-connecting-arrow" d="M 12 5 C 28 20, 28 40, 12 55" stroke="url(#arrowGoldGradientVertical)" stroke-width="3" stroke-linecap="round" />
+              <path d="M 8 47 L 12 55 L 18 49" stroke="url(#arrowGoldGradientVertical)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+            </svg>
+          </div>
+
+          <!-- Step 04 Card -->
+          <div class="roadmap-step-card-wrapper scroll-trigger fade-in-up" data-delay="300">
+            <div class="card-glow-bg"></div>
+            <!-- Staggered & Tilted Card -->
+            <div class="roadmap-card glass-panel-premium group roadmap-card-tilted-4">
+              <div class="relative h-full flex flex-col justify-between">
+                <div>
+                  <div class="step-watermark font-heading">04</div>
+                  <div class="flex items-center justify-between mb-6">
+                    <span class="step-tag font-heading" data-i18n="journeyStep4Tag">STEP 04</span>
+                    <div class="crown-icon-container">
+                      <i data-lucide="gem" class="w-5 h-5 text-gold-primary transition-transform duration-300 group-hover:scale-110"></i>
+                    </div>
+                  </div>
+                  <h3 class="text-xl sm:text-2xl font-heading font-extrabold text-white mb-3 tracking-tight group-hover:text-gold-light transition-colors" data-i18n="journeyStep4Title">
+                    Rule The Capital
+                  </h3>
+                  <p class="text-sm text-[#a1a1aa] leading-relaxed transition-colors group-hover:text-white" data-i18n="journeyStep4Desc">
+                    Scale your account from $10K to $2M through the growth plan.
+                  </p>
+                </div>
+                <div class="step-micro-details mt-6 pt-4 border-t border-gold-primary/8 flex flex-col gap-2.5 opacity-60 group-hover:opacity-100 transition-opacity">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-3.5 h-3.5 text-gold-primary flex-shrink-0"></i>
+                    <span class="text-xs text-[#a1a1aa]">25% Capital Increase</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-3.5 h-3.5 text-gold-primary flex-shrink-0"></i>
+                    <span class="text-xs text-[#a1a1aa]">Bi-weekly Profit Payouts</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+      <!-- Feature Badges -->
+      <div class="flex flex-wrap justify-center gap-4.5 mb-16 scroll-trigger fade-in-up mt-8" data-delay="100">
+        <div class="roadmap-feature-badge">
+          <i data-lucide="clock" class="w-4.5 h-4.5 text-gold-primary"></i>
+          <span>No Time Limits</span>
+        </div>
+        <div class="roadmap-feature-badge">
+          <i data-lucide="activity" class="w-4.5 h-4.5 text-gold-primary"></i>
+          <span>Up to 1:100 Leverage</span>
+        </div>
+        <div class="roadmap-feature-badge">
+          <i data-lucide="shield" class="w-4.5 h-4.5 text-gold-primary"></i>
+          <span>Balance-Based Drawdown</span>
+        </div>
+      </div>
+
+      <!-- Premium CTA Buttons -->
+      <div class="text-center scroll-trigger fade-in-up" data-delay="200">
+        <div class="inline-flex flex-wrap gap-4 justify-center">
+          <a href="{% url 'signup' %}" class="btn btn-primary">
+            <span data-i18n="getStarted">Get Started</span>
+            <i data-lucide="arrow-right" class="w-4.5 h-4.5"></i>
+          </a>
+          <a href="{% url 'how_it_works' %}" class="btn btn-secondary">
+            <span data-i18n="seeRoadmap">See roadmap</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= THE LORD'S JOURNEY (ROADMAP) END ================= -->
+  <!-- ================= HOW IT WORKS END ================= -->
+
+
+  <!-- ================= CALCULATOR WIDGET START ================= -->
+  <section id="challenges" class="relative py-24">
+    <div class="bg-grid"></div>
+    <div class="container mx-auto relative z-10" id="challenges-widget">
+      <!-- Header -->
+      <div class="text-center mb-[60px] scroll-trigger fade-in-up">
+        <div class="font-heading text-sm font-bold text-gold-primary uppercase tracking-[0.1em] mb-3" data-i18n="challengesTag">
+          Choose Your Path
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-heading font-extrabold text-white mb-4">
+          <span data-i18n="challengesTitle1">Trading</span> <span class="text-gold-gradient" data-i18n="challengesTitle2">Challenges</span>
+        </h2>
+        <p class="text-[#a1a1aa] max-w-[600px] mx-auto text-base">
+          Choose between our 1-Step or 2-Step funding evaluation challenges. Pass the targets to trade simulated capital.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 bg-[#0a0a0c]/40 border border-gold-primary/12 rounded-[24px] p-6 sm:p-8 shadow-[0_0_25px_rgba(212,175,55,0.15)] items-stretch gap-10 scroll-trigger zoom-in">
+        
+        <!-- Left Controls Column -->
+        <div class="flex flex-col justify-between text-left">
+          <div>
+            <!-- Model Toggle Buttons -->
+            <h3 class="text-lg font-heading text-white mb-4 font-semibold">1. Select Evaluation Phase Model</h3>
+            <div class="inline-flex bg-white/3 border border-white/8 rounded-full p-1.5 mb-8 w-full">
+              <button class="calc-model-btn flex-1 border-none py-3 px-6 rounded-full cursor-pointer font-semibold font-heading text-[15px] transition-all duration-300" data-model-key="1-step" style="background: transparent; color: var(--text-secondary);">1-Step Evaluation</button>
+              <button class="calc-model-btn flex-1 border-none py-3 px-6 rounded-full cursor-pointer font-semibold font-heading text-[15px] transition-all duration-300" data-model-key="2-step" style="background: var(--gold-gradient); color: #000;">2-Step Evaluation</button>
+            </div>
+
+            <!-- Account Size Selectors -->
+            <h3 class="text-lg font-heading text-white mb-4 font-semibold">2. Choose Account Size</h3>
+            <div id="calc-sizes-container" class="grid grid-cols-3 gap-3 mb-8">
+              <!-- Dynamically populated from JS -->
+            </div>
+          </div>
+
+          <!-- Rules Info Badge -->
+          <div class="flex items-start gap-3.5 p-5 rounded-2xl bg-gold-primary/4 border border-dashed border-gold-primary/25">
+            <i data-lucide="shield-check" class="w-6 h-6 text-gold-primary flex-shrink-0 mt-0.5"></i>
+            <div>
+              <h4 class="text-white text-sm font-heading font-semibold mb-1">No Time Limit Challenge</h4>
+              <p class="text-[#a1a1aa] text-xs leading-relaxed">
+                Trade as calmly as you wish. There is no maximum duration. The registration fee is fully refunded upon reaching the funded stage.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Invoice Panel -->
+        <div class="glass-panel p-6 sm:p-9 border border-gold-primary/25 shadow-[0_0_35px_rgba(212,175,55,0.3)] flex flex-col justify-between text-left">
+          <div>
+            <div class="flex justify-between items-center mb-6">
+              <div>
+                <span class="calc-plan-title text-[13px] text-[#a1a1aa] uppercase tracking-[0.05em]">2-Step Evaluation</span>
+                <h3 class="calc-plan-size text-2xl sm:text-3xl text-white font-heading font-extrabold">$100,000 Account</h3>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-[#61616a]">Refundable Fee</span>
+                <div class="calc-plan-fee text-3xl sm:text-4xl text-gold-primary font-heading font-extrabold">$479</div>
+              </div>
+            </div>
+
+            <hr class="border-none border-t border-gold-primary/15 mb-6" />
+
+            <!-- Plan Rules List -->
+            <div class="flex flex-col gap-4 mb-8">
+              <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-gold-primary"></i>
+                  <span class="text-xs sm:text-sm text-[#a1a1aa]">Profit Target</span>
+                </div>
+                <span class="calc-rule-target text-xs sm:text-sm font-semibold text-white">P1: 8% | P2: 5%</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-gold-primary"></i>
+                  <span class="text-xs sm:text-sm text-[#a1a1aa]">Daily Drawdown Limit (Balance-based)</span>
+                </div>
+                <span class="calc-rule-daily text-xs sm:text-sm font-semibold text-white">5% ($5,000)</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-gold-primary"></i>
+                  <span class="text-xs sm:text-sm text-[#a1a1aa]">Max Overall Drawdown (Static)</span>
+                </div>
+                <span class="calc-rule-overall text-xs sm:text-sm font-semibold text-white">10% ($10,000)</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-gold-primary"></i>
+                  <span class="text-xs sm:text-sm text-[#a1a1aa]">Minimum Trading Days</span>
+                </div>
+                <span class="text-xs sm:text-sm font-semibold text-white">0 Days</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-gold-primary"></i>
+                  <span class="text-xs sm:text-sm text-[#a1a1aa]">Profit Split Split</span>
+                </div>
+                <span class="text-xs sm:text-sm font-semibold text-white">Up to 90%</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-gold-primary"></i>
+                  <span class="text-xs sm:text-sm text-[#a1a1aa]">Leverage Limit</span>
+                </div>
+                <span class="text-xs sm:text-sm font-semibold text-white">1:100 Forex</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-full py-4 text-center justify-center">
+            <span>Buy Evaluation Challenge</span>
+            <i data-lucide="arrow-right" class="w-4.5 h-4.5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= CALCULATOR WIDGET END ================= -->
+
+
+  <!-- ================= RULES COMPARISON START ================= -->
+  <section id="rules" class="relative py-24">
+    <div class="bg-grid"></div>
+    <div class="container mx-auto relative z-10">
+      <!-- Header -->
+      <div class="text-center mb-[60px] scroll-trigger fade-in-up">
+        <div class="font-heading text-sm font-bold text-gold-primary uppercase tracking-[0.1em] mb-3" data-i18n="rulesTag">
+          Discipline Framework
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-heading font-extrabold text-white mb-4">
+          <span data-i18n="rulesTitle1">Our Trading</span> <span class="text-gold-gradient" data-i18n="rulesTitle2">Rules</span>
+        </h2>
+        <p class="text-[#a1a1aa] max-w-[600px] mx-auto text-base" data-i18n="rulesDesc">
+          Fair, transparent, and designed to protect both trader and capital. No hidden conditions.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        
+        <!-- Allowed Column -->
+        <div class="glass-panel p-8 sm:p-10 border border-[#10b981]/15 bg-[#0a0a0c]/40 text-left scroll-trigger fade-in-left">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="bg-[#10b981]/10 p-2.5 rounded-lg text-[#10b981]">
+              <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-2xl text-white font-heading font-semibold">Allowed Strategies</h3>
+          </div>
+
+          <div class="flex flex-col gap-6">
+            <div class="flex gap-3.5 items-start">
+              <i data-lucide="check-circle-2" class="w-4.5 h-4.5 text-[#10b981] flex-shrink-0 mt-1"></i>
+              <div>
+                <h4 class="text-white text-base font-semibold mb-1">News Trading</h4>
+                <p class="text-[#a1a1aa] text-[13.5px] leading-relaxed">Execute trades freely before, during, and after high-impact economic news releases.</p>
+              </div>
+            </div>
+            <div class="flex gap-3.5 items-start">
+              <i data-lucide="check-circle-2" class="w-4.5 h-4.5 text-[#10b981] flex-shrink-0 mt-1"></i>
+              <div>
+                <h4 class="text-white text-base font-semibold mb-1">Expert Advisors (EAs)</h4>
+                <p class="text-[#a1a1aa] text-[13.5px] leading-relaxed">Deploy automated trading bots, indicators, and copy-traders configured to your own accounts.</p>
+              </div>
+            </div>
+            <div class="flex gap-3.5 items-start">
+              <i data-lucide="check-circle-2" class="w-4.5 h-4.5 text-[#10b981] flex-shrink-0 mt-1"></i>
+              <div>
+                <h4 class="text-white text-base font-semibold mb-1">Weekend Holding</h4>
+                <p class="text-[#a1a1aa] text-[13.5px] leading-relaxed">Hold open swing positions through weekends without forced closures.</p>
+              </div>
+            </div>
+            <div class="flex gap-3.5 items-start">
+              <i data-lucide="check-circle-2" class="w-4.5 h-4.5 text-[#10b981] flex-shrink-0 mt-1"></i>
+              <div>
+                <h4 class="text-white text-base font-semibold mb-1">Hedging Positions</h4>
+                <p class="text-[#a1a1aa] text-[13.5px] leading-relaxed">Hedge positions on the same currency pair to manage risk directionally.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prohibited Column -->
+        <div class="glass-panel p-8 sm:p-10 border border-[#ef4444]/15 bg-[#0a0a0c]/40 text-left scroll-trigger fade-in-right delay-200">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="bg-[#ef4444]/10 p-2.5 rounded-lg text-[#ef4444]">
+              <i data-lucide="shield-alert" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-2xl text-white font-heading font-semibold">Prohibited Actions</h3>
+          </div>
+
+          <div class="flex flex-col gap-6">
+            <div class="flex gap-3.5 items-start">
+              <i data-lucide="x-circle" class="w-4.5 h-4.5 text-[#ef4444] flex-shrink-0 mt-1"></i>
+              <div>
+                <h4 class="text-white text-base font-semibold mb-1">Latency Arbitrage</h4>
+                <p class="text-[#a1a1aa] text-[13.5px] leading-relaxed">Exploiting pricing feed latency between platforms is strictly forbidden.</p>
+              </div>
+            </div>
+            <div class="flex gap-3.5 items-start">
+              <i data-lucide="x-circle" class="w-4.5 h-4.5 text-[#ef4444] flex-shrink-0 mt-1"></i>
+              <div>
+                <h4 class="text-white text-base font-semibold mb-1">HFT Manipulation</h4>
+                <p class="text-[#a1a1aa] text-[13.5px] leading-relaxed">High-frequency algorithms designed to spam orders or exploit demo server vulnerabilities.</p>
+              </div>
+            </div>
+            <div class="flex gap-3.5 items-start">
+              <i data-lucide="x-circle" class="w-4.5 h-4.5 text-[#ef4444] flex-shrink-0 mt-1"></i>
+              <div>
+                <h4 class="text-white text-base font-semibold mb-1">Multi-Account Hedging</h4>
+                <p class="text-[#a1a1aa] text-[13.5px] leading-relaxed">Opposing positions across multiple accounts to guarantee payouts.</p>
+              </div>
+            </div>
+            <div class="flex gap-3.5 items-start">
+              <i data-lucide="x-circle" class="w-4.5 h-4.5 text-[#ef4444] flex-shrink-0 mt-1"></i>
+              <div>
+                <h4 class="text-white text-base font-semibold mb-1">Third-Party Management</h4>
+                <p class="text-[#a1a1aa] text-[13.5px] leading-relaxed">Account sharing or utilizing public pass-key services violates rules.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- ================= RULES COMPARISON END ================= -->
+
+
+  <!-- ================= FAQ ACCORDION START ================= -->
+  <section id="faq" class="relative py-24">
+    <div class="container mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        
+        <!-- Left Column -->
+        <div class="lg:col-span-5 flex flex-col items-start text-left scroll-trigger fade-in-left">
+          <div class="font-heading text-xs font-bold text-gold-primary tracking-[0.2em] uppercase mb-1">05 &mdash; 05</div>
+          <div class="font-heading text-xs font-semibold text-gold-primary tracking-[0.15em] uppercase mb-4" data-i18n="faqTag">[ // FAQ ]</div>
+          <h2 class="text-4xl sm:text-5xl font-heading font-extrabold text-white mb-6 leading-[1.15]">
+            <span data-i18n="faqTitle1">Frequently Asked</span><br />
+            <span class="text-gold-gradient" data-i18n="faqTitle2">Questions</span>
+          </h2>
+          <p class="text-[#a1a1aa] text-base mb-8 max-w-[420px] leading-relaxed">
+            Everything you need to know about LordFunded challenges, payouts, and trading rules.
+          </p>
+          <a href="{% url 'faq' %}" class="inline-flex items-center gap-2 text-white hover:text-gold-primary transition-colors text-sm font-semibold border-b border-white/20 hover:border-gold-primary pb-1 group w-fit">
+            <span data-i18n="viewAllFAQs">View All FAQs</span>
+            <span class="transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+          </a>
+        </div>
+
+        <!-- Right Column -->
+        <div class="lg:col-span-7 scroll-trigger fade-in-right">
+          <div id="faq-accordion-list" class="faq-container-unified flex flex-col">
+            
+            <!-- FAQ 1 -->
+            <div class="faq-card group py-5 px-5 sm:px-6 cursor-pointer relative transition-all duration-200">
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4 flex-1">
+                  <span class="faq-number font-heading text-sm font-bold text-gold-primary opacity-80 min-w-[36px]">Q.01</span>
+                  <span class="font-heading text-base font-semibold text-white transition-colors duration-200 group-hover:text-gold-light">What is a prop firm?</span>
+                </div>
+                <span class="faq-toggle-icon text-xl font-light text-gold-primary transition-all duration-300 select-none min-w-[20px] text-right">+</span>
+              </div>
+              <div class="faq-answer-wrapper max-h-0 overflow-hidden transition-all duration-350 ease-in-out opacity-0">
+                <div class="pl-[52px] pr-2 text-sm sm:text-[14.5px] text-[#a1a1aa] leading-relaxed pt-3">
+                  A prop firm (proprietary trading firm) provides traders with real capital to trade financial markets. Instead of risking your own money, you trade the firm's capital and keep a percentage of the profits. LordFunded evaluates traders through challenges, then funds those who demonstrate consistent, disciplined trading.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ 2 -->
+            <div class="faq-card group py-5 px-5 sm:px-6 cursor-pointer relative transition-all duration-200">
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4 flex-1">
+                  <span class="faq-number font-heading text-sm font-bold text-gold-primary opacity-80 min-w-[36px]">Q.02</span>
+                  <span class="font-heading text-base font-semibold text-white transition-colors duration-200 group-hover:text-gold-light">What is LordFunded?</span>
+                </div>
+                <span class="faq-toggle-icon text-xl font-light text-gold-primary transition-all duration-300 select-none min-w-[20px] text-right">+</span>
+              </div>
+              <div class="faq-answer-wrapper max-h-0 overflow-hidden transition-all duration-350 ease-in-out opacity-0">
+                <div class="pl-[52px] pr-2 text-sm sm:text-[14.5px] text-[#a1a1aa] leading-relaxed pt-3">
+                  LordFunded is a faith-inspired proprietary trading firm that empowers disciplined traders with up to $500,000 in real funded capital. We believe faithful stewardship of capital is a calling — our mission is to fund traders who trade with purpose, discipline, and integrity.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ 3 -->
+            <div class="faq-card group py-5 px-5 sm:px-6 cursor-pointer relative transition-all duration-200">
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4 flex-1">
+                  <span class="faq-number font-heading text-sm font-bold text-gold-primary opacity-80 min-w-[36px]">Q.03</span>
+                  <span class="font-heading text-base font-semibold text-white transition-colors duration-200 group-hover:text-gold-light">How does the LordFunded challenge work?</span>
+                </div>
+                <span class="faq-toggle-icon text-xl font-light text-gold-primary transition-all duration-300 select-none min-w-[20px] text-right">+</span>
+              </div>
+              <div class="faq-answer-wrapper max-h-0 overflow-hidden transition-all duration-350 ease-in-out opacity-0">
+                <div class="pl-[52px] pr-2 text-sm sm:text-[14.5px] text-[#a1a1aa] leading-relaxed pt-3">
+                  Choose your account type and size, pay the one-time challenge fee, and begin trading. Hit the profit target while respecting the drawdown and risk rules, and you pass. Once passed, you receive a live funded account with real capital. Your challenge fee is fully refunded on your first payout.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ 4 -->
+            <div class="faq-card group py-5 px-5 sm:px-6 cursor-pointer relative transition-all duration-200">
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4 flex-1">
+                  <span class="faq-number font-heading text-sm font-bold text-gold-primary opacity-80 min-w-[36px]">Q.04</span>
+                  <span class="font-heading text-base font-semibold text-white transition-colors duration-200 group-hover:text-gold-light">How many account types does LordFunded offer?</span>
+                </div>
+                <span class="faq-toggle-icon text-xl font-light text-gold-primary transition-all duration-300 select-none min-w-[20px] text-right">+</span>
+              </div>
+              <div class="faq-answer-wrapper max-h-0 overflow-hidden transition-all duration-350 ease-in-out opacity-0">
+                <div class="pl-[52px] pr-2 text-sm sm:text-[14.5px] text-[#a1a1aa] leading-relaxed pt-3">
+                  LordFunded offers four account types:<br /><br />
+                  <b>Trial (Step 1)</b> — Single phase, 10% profit target<br />
+                  <b>Quest (Step 2)</b> — Two stages, 10% then 5% profit target<br />
+                  <b>Throne (HFT)</b> — Single phase for algorithmic traders, no minimum days<br />
+                  <b>Lord (Instant)</b> — No challenge, live capital from day one
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ 5 -->
+            <div class="faq-card group py-5 px-5 sm:px-6 cursor-pointer relative transition-all duration-200">
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4 flex-1">
+                  <span class="faq-number font-heading text-sm font-bold text-gold-primary opacity-80 min-w-[36px]">Q.05</span>
+                  <span class="font-heading text-base font-semibold text-white transition-colors duration-200 group-hover:text-gold-light">What are the drawdown rules?</span>
+                </div>
+                <span class="faq-toggle-icon text-xl font-light text-gold-primary transition-all duration-300 select-none min-w-[20px] text-right">+</span>
+              </div>
+              <div class="faq-answer-wrapper max-h-0 overflow-hidden transition-all duration-350 ease-in-out opacity-0">
+                <div class="pl-[52px] pr-2 text-sm sm:text-[14.5px] text-[#a1a1aa] leading-relaxed pt-3">
+                  All accounts have a 5% daily drawdown limit. Maximum drawdown is 10% for Trial, Quest, and Throne accounts, and 8% for the Lord Instant account. All drawdown on every LordFunded account type is calculated on a static basis from the initial account balance only. The drawdown floor never moves, never trails, and never tightens regardless of how much profit the account generates. Breaching either limit results in immediate account failure.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+    </div>
+  </section>
+  <!-- ================= FAQ ACCORDION END ================= -->
+
+
+  <!-- ================= TESTIMONIALS START ================= -->
+  <section id="testimonials" class="relative py-24 overflow-hidden">
+    <div class="absolute top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gold-primary/5 blur-[40px] pointer-events-none rounded-full"></div>
+    <div class="container mx-auto relative z-[2]">
+      
+      <!-- Header -->
+      <div class="text-center mb-[56px] scroll-trigger fade-in-up">
+        <div class="inline-block bg-gold-primary/8 border border-gold-primary/20 rounded-full px-4.5 py-1.5 text-xs font-heading font-semibold text-gold-primary tracking-[0.08em] uppercase mb-4.5">
+          Testimonials
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-heading font-extrabold text-white mb-3">
+          What Our <span class="text-gold-gradient">Traders Say</span>
+        </h2>
+        <p class="text-[#a1a1aa] text-[15px]">Real traders, real results</p>
+      </div>
+
+      <div class="max-w-[700px] mx-auto">
+        <!-- Testimonial Invoice Card (Modified dynamically by main.js) -->
+        <div id="testimonial-card" class="bg-[#0e0d0a]/70 border border-gold-primary/15 rounded-[20px] p-10 sm:p-11 backdrop-blur-[16px] shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-all duration-200 min-h-[220px] relative text-left scroll-trigger zoom-in">
+          
+          <div class="absolute top-5 right-8 text-[80px] leading-[1] font-heading font-black text-gold-primary/8 select-none pointer-events-none">"</div>
+          
+          <!-- Stars -->
+          <div class="flex gap-1 mb-4.5">
+            <i data-lucide="star" class="w-4.5 h-4.5 fill-gold-primary text-gold-primary drop-shadow-[0_0_4px_rgba(212,175,55,0.5)]"></i>
+            <i data-lucide="star" class="w-4.5 h-4.5 fill-gold-primary text-gold-primary drop-shadow-[0_0_4px_rgba(212,175,55,0.5)]"></i>
+            <i data-lucide="star" class="w-4.5 h-4.5 fill-gold-primary text-gold-primary drop-shadow-[0_0_4px_rgba(212,175,55,0.5)]"></i>
+            <i data-lucide="star" class="w-4.5 h-4.5 fill-gold-primary text-gold-primary drop-shadow-[0_0_4px_rgba(212,175,55,0.5)]"></i>
+            <i data-lucide="star" class="w-4.5 h-4.5 fill-gold-primary text-gold-primary drop-shadow-[0_0_4px_rgba(212,175,55,0.5)]"></i>
+          </div>
+
+          <p class="review-text text-base leading-relaxed text-white/90 italic mb-7 font-sans">
+            "LordFunded changed my trading career. I passed Phase 1 in 12 days and got funded with $100K. The process is transparent and the support team is incredible."
+          </p>
+
+          <!-- Reviewer Footer -->
+          <div class="flex items-center justify-between flex-wrap gap-4">
+            <div class="flex items-center gap-3">
+              <div class="author-initials w-[42px] h-[42px] rounded-full flex items-center justify-center font-extrabold text-base font-heading text-black shadow-[0_0_14px_rgba(212,175,55,0.4)] flex-shrink-0" style="background: rgb(212, 175, 55);">M</div>
+              <div>
+                <div class="author-name font-bold text-[15px] font-heading text-white">Mohammed Al-Rashid</div>
+                <div class="author-country text-[12px] text-[#61616a]">UAE</div>
+              </div>
+            </div>
+            
+            <div class="text-right">
+              <div class="payout-amount text-xl font-extrabold font-heading text-gold-primary drop-shadow-[0_0_20px_rgba(212,175,55,0.3)]">$8,400</div>
+              <div class="account-size text-[11px] text-[#61616a] mt-0.5">$100K Account</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carousel navigation -->
+        <div class="flex items-center justify-center gap-5 mt-8">
+          <button id="testimonial-prev-btn" class="w-[38px] h-[38px] rounded-full bg-white/4 border border-gold-primary/20 text-gold-primary flex items-center justify-center cursor-pointer transition-all hover:bg-gold-primary/10 hover:border-gold-primary/45">
+            <i data-lucide="chevron-left" class="w-4.5 h-4.5"></i>
+          </button>
+          <div id="testimonial-dots" class="flex gap-2 items-center">
+            <!-- Populated from JS -->
+          </div>
+          <button id="testimonial-next-btn" class="w-[38px] h-[38px] rounded-full bg-white/4 border border-gold-primary/20 text-gold-primary flex items-center justify-center cursor-pointer transition-all hover:bg-gold-primary/10 hover:border-gold-primary/45">
+            <i data-lucide="chevron-right" class="w-4.5 h-4.5"></i>
+          </button>
+        </div>
+
+        <div class="text-center mt-5">
+          <span id="testimonial-counter" class="text-xs text-[#61616a]">1 / 7 traders</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= TESTIMONIALS END ================= -->
+
+
+  <!-- ================= LIVE PAYOUTS START ================= -->
+  <section id="live-payouts" class="relative py-24 overflow-hidden bg-[#050506]">
+    <div class="absolute top-[30%] left-[10%] w-[500px] h-[250px] bg-gold-primary/5 blur-[50px] pointer-events-none rounded-full"></div>
+    <div class="container mx-auto relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left Column: Content -->
+        <div class="lg:col-span-5 text-left scroll-trigger fade-in-left">
+          <!-- Trustpilot Rating badge -->
+          <div class="flex items-center gap-2 mb-6">
+            <span class="text-[#10b981] font-heading font-extrabold text-sm tracking-wider flex items-center gap-1 uppercase bg-[#10b981]/8 px-3 py-1 rounded-lg border border-[#10b981]/15">
+              <svg class="w-4 h-4 fill-[#10b981] text-[#10b981]" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Trustpilot
+            </span>
+            <span class="text-[#a1a1aa] text-xs font-semibold">Excellent 4.8 out of 5</span>
+          </div>
+
+          <h2 class="text-4xl sm:text-5xl font-heading font-extrabold text-white mb-6 leading-[1.15]">
+            <span data-i18n="payoutTitle1">Payouts Made Simple,</span><br />
+            <span class="text-gold-gradient" data-i18n="payoutTitle2">Secure, and Seamless</span>
+          </h2>
+          <p class="text-[#a1a1aa] text-base mb-8 max-w-[450px] leading-relaxed" data-i18n="payoutDesc">
+            Lord Funded gives you complete transparency with real-time payout data — whether through Payout Junction or Blockchain, ensuring speed, trust, and global accessibility.
+          </p>
+          <a href="{% url 'signup' %}" class="btn btn-primary inline-flex gap-2">
+            <span data-i18n="payoutCTA">Get Funded</span>
+            <i data-lucide="arrow-right" class="w-4.5 h-4.5"></i>
+          </a>
+        </div>
+
+        <!-- Right Column: Live Ticker Feed -->
+        <div class="lg:col-span-7 scroll-trigger fade-in-right">
+          <div class="payout-ticker-container">
+            <div class="payout-ticker-track" id="payout-ticker-track">
+              <!-- Payout rows will be dynamically inserted here via Javascript -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const MOCK_PAYOUTS = [
+        { name: 'Waqas Mehmood', flag: '🇵🇰', amount: '$1,546', duration: '10 Mins', platform: 'usdt' },
+        { name: 'Nigel Baker', flag: '🇬🇧', amount: '$1,891', duration: '21 Mins', platform: 'bank' },
+        { name: 'Nikita van der Vleuten', flag: '🇳🇱', amount: '$1,622', duration: '9 Mins', platform: 'usdt' },
+        { name: 'Pinaki Saha', flag: '🇬🇧', amount: '$2,453', duration: '7 Mins', platform: 'usdt' },
+        { name: 'Carlos Mendoza', flag: '🇲🇽', amount: '$6,750', duration: '14 Mins', platform: 'btc' },
+        { name: 'Amara Diop', flag: '🇸🇳', amount: '$3,120', duration: '45 Mins', platform: 'bank' },
+        { name: 'Yuki Tanaka', flag: '🇯🇵', amount: '$4,890', duration: '18 Mins', platform: 'usdt' },
+        { name: 'Dmitri Volkov', flag: '🇷🇺', amount: '$8,400', duration: '32 Mins', platform: 'btc' },
+        { name: 'Sophie Dubois', flag: '🇫🇷', amount: '$2,150', duration: '12 Mins', platform: 'bank' },
+        { name: 'Mateo Rossi', flag: '🇮🇹', amount: '$5,300', duration: '25 Mins', platform: 'usdt' },
+        { name: 'Sarah Jenkins', flag: '🇺🇸', amount: '$12,450', duration: '5 Mins', platform: 'usdt' },
+        { name: 'Liam O\'Connor', flag: '🇮🇪', amount: '$3,800', duration: '40 Mins', platform: 'bank' },
+        { name: 'Fatima Al-Sayed', flag: '🇦🇪', amount: '$7,250', duration: '15 Mins', platform: 'usdt' },
+        { name: 'Lucas Silva', flag: '🇧🇷', amount: '$1,920', duration: '30 Mins', platform: 'btc' },
+        { name: 'Elena Petrova', flag: '🇺🇦', amount: '$4,110', duration: '11 Mins', platform: 'usdt' }
+      ];
+
+      const tickerTrack = document.getElementById('payout-ticker-track');
+      if (!tickerTrack) return;
+
+      function getTranslation(key, fallback) {
+        const lang = (typeof currentLangCode !== 'undefined' && currentLangCode) || localStorage.getItem('lang') || 'en';
+        return (typeof translations !== 'undefined' && translations[lang] && translations[lang][key]) || fallback;
+      }
+
+      function createCard(payout) {
+        const card = document.createElement('div');
+        card.payoutData = payout;
+        card.className = 'flex items-center justify-between p-5 bg-[#0e0d0a]/75 border border-gold-primary/12 rounded-2xl backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.4)] transition-all duration-300 hover:border-gold-primary/35 hover:shadow-[0_0_20px_rgba(212,175,55,0.12)] min-w-[320px]';
+
+        let methodIconHtml = '';
+        if (payout.platform === 'usdt') {
+          methodIconHtml = `
+            <div class="w-11 h-11 rounded-full flex items-center justify-center bg-[#26a17b]/10 border border-[#26a17b]/25 text-[#26a17b] flex-shrink-0">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm1.65 8.16v1.44c1.86.1 3 .4 3 .75s-1.14.65-3 .75v2.74h-3.3v-2.74c-1.86-.1-3-.4-3-.75s1.14-.65 3-.75v-1.44h-2.5V7.41h8.3v2.75zm-1.65 3.09c1.23 0 2.25-.2 2.25-.45s-1-.45-2.25-.45-2.25.2-2.25.45 1 .45 2.25.45z" />
+              </svg>
+            </div>`;
+        } else if (payout.platform === 'btc') {
+          methodIconHtml = `
+            <div class="w-11 h-11 rounded-full flex items-center justify-center bg-[#f7931a]/10 border border-[#f7931a]/25 text-[#f7931a] flex-shrink-0">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M23.633 15.022c-.41 1.644-1.503 2.92-3.23 3.427l-.605 2.427h-2.186l.593-2.38c-.58.15-1.146.295-1.703.435l-.592 2.38H13.72l.605-2.427c-.475.105-.93.203-1.385.3l-.004.015-3.013.753-.587-2.355s1.62-.375 1.6-.395c.884-.22 1.3-.8 1.488-1.395l1.433-5.753c.06-.255.02-.635-.436-.523.02-.008-1.6-.397-1.6-.397L11.23 6.94l2.844-.712c.523-.13.1-.027 1.493-.377l.595-2.39h2.184l-.595 2.39c.597-.137 1.173-.263 1.737-.393l.592-2.38h2.187l-.605 2.428c3.023-.572 4.795.666 5.378 3.01.47 1.888-.13 3.235-1.576 4.02 1.053.486 1.77 1.258 1.954 2.894zm-5.698-5.32c.16-.65-.92-.81-1.38-.895l-1.077.27.42 1.68c.456-.114 1.874-.396 2.037-1.055zm.622 3.65c.18-.737-1.127-.92-1.69-.997l-1.185.297.46 1.854c.563-.14 2.235-.407 2.415-1.154z" />
+              </svg>
+            </div>`;
+        } else {
+          methodIconHtml = `
+            <div class="w-11 h-11 rounded-full flex items-center justify-center bg-[#6366f1]/10 border border-[#6366f1]/25 text-[#6366f1] flex-shrink-0">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="2" />
+                <line x1="2" y1="10" x2="22" y2="10" />
+              </svg>
+            </div>`;
+        }
+
+        const viewDetailsText = getTranslation('payoutViewDetails', 'View Details');
+        const processedText = getTranslation('payoutProcessed', 'Processed in');
+        const minsText = getTranslation('payoutMinutes', 'Mins');
+        
+        let durationFormatted = payout.duration;
+        if (payout.duration.includes('Mins')) {
+          durationFormatted = payout.duration.replace('Mins', minsText);
+        }
+
+        card.innerHTML = `
+          <div class="flex items-center gap-4">
+            ${methodIconHtml}
+            <div>
+              <div class="font-heading font-extrabold text-sm sm:text-base text-white tracking-wide flex items-center gap-2">
+                ${payout.name} <span class="text-base select-none">${payout.flag}</span>
+              </div>
+              <a href="#" class="text-xs text-gold-primary/75 hover:text-gold-light hover:underline transition-colors mt-0.5 inline-block">${viewDetailsText}</a>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="font-heading font-extrabold text-lg sm:text-xl text-white tracking-tight">
+              ${payout.amount}
+            </div>
+            <div class="mt-1 inline-flex items-center gap-1.5 bg-[#062a4a]/45 border border-[#38bdf8]/15 px-3 py-1 rounded-full text-[11px] font-bold text-[#38bdf8] shadow-[0_0_12px_rgba(56,189,248,0.1)]">
+              <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span class="payout-badge-text">${processedText} ${durationFormatted}</span>
+            </div>
+          </div>
+        `;
+        return card;
+      }
+
+      // Populate track: set 1
+      MOCK_PAYOUTS.forEach(payout => {
+        tickerTrack.appendChild(createCard(payout));
+      });
+
+      // Populate track: set 2 (seamless infinite marquee)
+      MOCK_PAYOUTS.forEach(payout => {
+        tickerTrack.appendChild(createCard(payout));
+      });
+
+      // Register language change listener to translate visible cards dynamically
+      const originalOnLanguageChange = window.onLanguageChange;
+      window.onLanguageChange = function(langCode) {
+        if (typeof originalOnLanguageChange === 'function') {
+          originalOnLanguageChange(langCode);
+        }
+
+        const viewDetailsText = (typeof translations !== 'undefined' && translations[langCode] && translations[langCode].payoutViewDetails) || 'View Details';
+        const processedText = (typeof translations !== 'undefined' && translations[langCode] && translations[langCode].payoutProcessed) || 'Processed in';
+        const minsText = (typeof translations !== 'undefined' && translations[langCode] && translations[langCode].payoutMinutes) || 'Mins';
+
+        Array.from(tickerTrack.children).forEach(card => {
+          const payout = card.payoutData;
+          if (!payout) return;
+
+          let durationFormatted = payout.duration;
+          if (payout.duration.includes('Mins')) {
+            durationFormatted = payout.duration.replace('Mins', minsText);
+          }
+
+          // Update View Details link
+          const link = card.querySelector('a');
+          if (link) link.textContent = viewDetailsText;
+
+          // Update processed badge text
+          const badgeSpan = card.querySelector('.payout-badge-text');
+          if (badgeSpan) {
+            badgeSpan.textContent = `${processedText} ${durationFormatted}`;
+          }
+        });
+      };
+    });
+  </script>
+  <!-- ================= LIVE PAYOUTS END ================= -->
+
+
+
+  <!-- ================= READY TO GET FUNDED CTA START ================= -->
+  <section class="py-24 relative overflow-hidden">
+    <div class="container mx-auto">
+      <div class="bg-[#0e0d0a]/70 border border-gold-primary/20 rounded-[24px] p-12 sm:p-16 text-center relative overflow-hidden backdrop-blur-[16px] scroll-trigger zoom-in">
+        <div class="absolute top-[-60px] left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-gold-primary/12 blur-[40px] pointer-events-none rounded-full"></div>
+        <div class="relative z-10">
+          <h2 class="text-3xl sm:text-4xl lg:text-[42px] font-heading font-extrabold text-white mb-4.5">
+            <span data-i18n="ctaTitle1">Ready to Get</span> <span class="text-gold-gradient" data-i18n="ctaTitle2">Funded</span>?
+          </h2>
+          <p class="text-[#a1a1aa] text-base sm:text-lg max-w-[520px] mx-auto mb-8 leading-relaxed" data-i18n="ctaDesc">
+            Choose your challenge, prove your discipline, and trade with our capital.
+          </p>
+          <a href="{% url 'challenges' %}" class="btn btn-primary inline-flex gap-2">
+            <span data-i18n="ctaBtn">Start Your Challenge</span>
+            <i data-lucide="arrow-right" class="w-4.5 h-4.5"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= READY TO GET FUNDED CTA END ================= -->
+
+
+  <!-- ================= FOOTER START ================= -->
+  <footer class="bg-[#030304] border-t border-gold-primary/12 py-20 pb-10 text-left relative z-5">
+    <div class="container mx-auto">
+      <!-- Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
+        
+        <!-- Info Column -->
+        <div class="flex flex-col gap-5">
+          <a href="{% url 'index' %}" class="flex items-center gap-2.5">
+            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline-block align-middle" style="filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.7));">
+              <rect x="6" y="6" width="88" height="88" rx="22" stroke="url(#lfGoldGradient)" stroke-width="4" fill="url(#lfBoxBg)" />
+              <circle cx="50" cy="50" r="34" fill="rgba(212, 175, 55, 0.32)" style="filter: blur(10px);" />
+              <image href="{% static 'images/logo.png' %}" x="12" y="10" width="76" height="80" />
+            </svg>
+            <span class="font-heading font-extrabold text-2xl tracking-[0.05em] uppercase text-white">
+              Lord <span class="text-gold-gradient">Funded</span>
+            </span>
+          </a>
+          <p class="text-sm text-[#a1a1aa] leading-relaxed" data-i18n="footerDesc">
+            Empowering global traders with simulated trading capital. Prove your consistency, pass the challenges, and secure profit splits up to 90%.
+          </p>
+          <!-- Socials -->
+          <div class="flex gap-3">
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="bg-white/2 border border-gold-primary/12 text-[#a1a1aa] w-[38px] h-[38px] rounded-lg flex items-center justify-center transition-all hover:text-gold-primary hover:border-gold-primary hover:bg-gold-primary/5">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" class="bg-white/2 border border-gold-primary/12 text-[#a1a1aa] w-[38px] h-[38px] rounded-lg flex items-center justify-center transition-all hover:text-gold-primary hover:border-gold-primary hover:bg-gold-primary/5">
+              <i data-lucide="send" class="w-[18px] h-[18px]"></i>
+            </a>
+            <a href="#" class="bg-white/2 border border-gold-primary/12 text-[#a1a1aa] w-[38px] h-[38px] rounded-lg flex items-center justify-center transition-all hover:text-gold-primary hover:border-gold-primary hover:bg-gold-primary/5">
+              <i data-lucide="globe" class="w-[18px] h-[18px]"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Challenges Column -->
+        <div>
+          <h4 class="font-heading text-white text-base font-semibold mb-5" data-i18n="footerChallenges">Challenges</h4>
+          <div class="flex flex-col gap-3">
+            <a href="{% url 'challenges' %}" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footer1Step">1-Step Evaluation</a>
+            <a href="{% url 'challenges' %}" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footer2Step">2-Step Evaluation</a>
+            <a href="{% url 'challenges' %}" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footerFundingRules">Funding Rules</a>
+            <a href="{% url 'challenges' %}" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footerScaling">Scaling Plans</a>
+          </div>
+        </div>
+
+        <!-- Info Column -->
+        <div>
+          <h4 class="font-heading text-white text-base font-semibold mb-5" data-i18n="footerInfo">Information</h4>
+          <div class="flex flex-col gap-3">
+            <a href="{% url 'index' %}#features" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footerFeatures">Features</a>
+            <a href="{% url 'how_it_works' %}" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footerHowItWorks">How it Works</a>
+            <a href="{% url 'faq' %}" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footerFAQ">FAQ Support</a>
+            <a href="/#contact-us" class="text-sm text-[#a1a1aa] hover:text-gold-primary transition-colors duration-200" data-i18n="footerContact">Contact Us</a>
+          </div>
+        </div>
+
+        <!-- Newsletter Column -->
+        <div>
+          <h4 class="font-heading text-white text-base font-semibold mb-5" data-i18n="footerStayUpdated">Stay Updated</h4>
+          <p class="text-[#a1a1aa] text-[13px] mb-4 leading-normal" data-i18n="footerSubscribe">
+            Subscribe to receive updates on leverage limits, promotions, and new challenge options.
+          </p>
+          <form onsubmit="event.preventDefault()" class="flex bg-white/2 border border-gold-primary/12 rounded-lg p-1">
+            <input type="email" placeholder="Enter email address" data-i18n-placeholder="footerEmail" required class="background-none border-none outline-none bg-transparent text-white px-3 py-2 text-xs w-full" />
+            <button type="submit" class="bg-gold-gradient border-none rounded-md text-black px-3.5 py-2 cursor-pointer flex items-center justify-center hover:opacity-90">
+              <i data-lucide="mail" class="w-4 h-4"></i>
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Divider -->
+      <hr class="border-none border-t border-white/5 mb-8" />
+
+      <!-- Disclaimer -->
+      <div class="mb-8 text-[11px] text-[#61616a] leading-relaxed text-justify">
+        <strong>Regulatory Disclaimer:</strong> <span data-i18n="footerDisclaimer">Lord Funded provides simulated trading environments for evaluation and educational purposes only. All accounts offered are simulated demo accounts, and all trading results are simulated rather than real market executions. We do not act as a custodian, broker-dealer, or investment advisor. Trading financial derivatives involves high risks, and simulated histories do not guarantee future success. By accessing our services, you acknowledge that no actual capital deposits or actual investments are being made.</span>
+      </div>
+
+      <!-- Bottom -->
+      <div class="flex flex-row justify-between items-center flex-wrap gap-4">
+        <span class="text-xs text-[#61616a]">
+          © <span id="current-year"></span> Lord Funded. <span data-i18n="allRightsReserved">All rights reserved.</span>
+        </span>
+        <div class="flex gap-5">
+          <a href="#" class="text-xs text-[#61616a] hover:text-gold-primary transition-colors" data-i18n="privacyPolicy">Privacy Policy</a>
+          <a href="#" class="text-xs text-[#61616a] hover:text-gold-primary transition-colors" data-i18n="termsOfService">Terms of Service</a>
+          <a href="#" class="text-xs text-[#61616a] hover:text-gold-primary transition-colors" data-i18n="riskDisclosure">Risk Disclosure</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- ================= FOOTER END ================= -->
+
+  <!-- Load dictionaries and scripts -->
+  <script src="{% static 'js/translations.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+  <script>
+    // Initialize current year in footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+    // Initialize Lucide Icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>
